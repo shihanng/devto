@@ -1,6 +1,12 @@
+# devto -- publish to [dev.to](https://dev.to) from your terminal
+
+## Generate [dev.to's API](https://docs.dev.to/api/) client
+
 ```
-docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate \
-    -i https://raw.githubusercontent.com/thepracticaldev/dev.to/7d0aeeefe5cf6250c5b58ae6b631bfe41fe5bf4a/docs/api_v0.yml \
-    -g go \
-    -o /local/out/go
+make gen
 ```
+
+See [`pkg/devto`](./pkg/devto).
+
+	github.com/antihax/optional v1.0.0
+	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
