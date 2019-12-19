@@ -9,10 +9,11 @@
  */
 
 package devto
+
 // WebhookCreateWebhookEndpoint struct for WebhookCreateWebhookEndpoint
 type WebhookCreateWebhookEndpoint struct {
 	// The name of the requester, eg. \"DEV\"
-	Source string `json:"source"`
+	Source    string `json:"source"`
 	TargetUrl string `json:"target_url"`
 	// An array of events identifiers
 	Events []string `json:"events"`

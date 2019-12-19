@@ -9,6 +9,7 @@
  */
 
 package devto
+
 // WebhookCreate Webhook creation payload
 type WebhookCreate struct {
 	WebhookEndpoint WebhookCreateWebhookEndpoint `json:"webhook_endpoint,omitempty"`

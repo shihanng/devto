@@ -9,6 +9,7 @@
  */
 
 package devto
+
 // ArticleUpdate struct for ArticleUpdate
 type ArticleUpdate struct {
 	Article ArticleUpdateArticle `json:"article,omitempty"`

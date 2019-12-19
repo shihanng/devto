@@ -9,13 +9,14 @@
  */
 
 package devto
+
 // ArticleUser The article's creator
 type ArticleUser struct {
-	Name string `json:"name,omitempty"`
-	Username string `json:"username,omitempty"`
+	Name            string `json:"name,omitempty"`
+	Username        string `json:"username,omitempty"`
 	TwitterUsername string `json:"twitter_username,omitempty"`
-	GithubUsername string `json:"github_username,omitempty"`
-	WebsiteUrl string `json:"website_url,omitempty"`
+	GithubUsername  string `json:"github_username,omitempty"`
+	WebsiteUrl      string `json:"website_url,omitempty"`
 	// Profile image (640x640)
 	ProfileImage string `json:"profile_image,omitempty"`
 	// Profile image (90x90)

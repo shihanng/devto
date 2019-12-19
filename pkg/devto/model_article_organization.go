@@ -9,11 +9,12 @@
  */
 
 package devto
+
 // ArticleOrganization The organization the article belongs to
 type ArticleOrganization struct {
-	Name string `json:"name,omitempty"`
+	Name     string `json:"name,omitempty"`
 	Username string `json:"username,omitempty"`
-	Slug string `json:"slug,omitempty"`
+	Slug     string `json:"slug,omitempty"`
 	// Profile image (640x640)
 	ProfileImage string `json:"profile_image,omitempty"`
 	// Profile image (90x90)

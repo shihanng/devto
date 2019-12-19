@@ -12,12 +12,12 @@ package devto
 
 import (
 	_context "context"
+	"fmt"
+	"github.com/antihax/optional"
 	_ioutil "io/ioutil"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"fmt"
 	"strings"
-	"github.com/antihax/optional"
 )
 
 // Linger please
@@ -30,12 +30,12 @@ type ArticlesApiService service
 
 // ArticlesApiCreateArticleOpts Optional parameters for the method 'CreateArticle'
 type ArticlesApiCreateArticleOpts struct {
-    ArticleCreate optional.Interface
+	ArticleCreate optional.Interface
 }
 
 /*
 CreateArticle Create a new article
-This endpoint allows the client to create a new article.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  ### Rate limiting  There is a limit of 10 articles created each 30 seconds by the same user.  ### Additional resources  - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb) 
+This endpoint allows the client to create a new article.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  ### Rate limiting  There is a limit of 10 articles created each 30 seconds by the same user.  ### Additional resources  - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *ArticlesApiCreateArticleOpts - Optional Parameters:
  * @param "ArticleCreate" (optional.Interface of ArticleCreate) -  Article to create
@@ -173,7 +173,7 @@ func (a *ArticlesApiService) CreateArticle(ctx _context.Context, localVarOptiona
 
 /*
 GetArticleById A published article
-This endpoint allows the client to retrieve a single published article given its &#x60;id&#x60;.  Responses are cached for 5 minutes. 
+This endpoint allows the client to retrieve a single published article given its &#x60;id&#x60;.  Responses are cached for 5 minutes.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id of the article
 @return ArticleShow
@@ -270,23 +270,23 @@ func (a *ArticlesApiService) GetArticleById(ctx _context.Context, id int32) (Art
 
 // ArticlesApiGetArticlesOpts Optional parameters for the method 'GetArticles'
 type ArticlesApiGetArticlesOpts struct {
-    Page optional.Int32
-    Tag optional.String
-    Username optional.String
-    State optional.String
-    Top optional.Int32
+	Page     optional.Int32
+	Tag      optional.String
+	Username optional.String
+	State    optional.String
+	Top      optional.Int32
 }
 
 /*
 GetArticles Published articles
-This endpoint allows the client to retrieve a list of articles.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  By default it will return featured, published articles ordered by descending popularity.  Each page will contain &#x60;30&#x60; articles.  Responses, according to the combination of params, are cached for 24 hours. 
+This endpoint allows the client to retrieve a list of articles.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  By default it will return featured, published articles ordered by descending popularity.  Each page will contain &#x60;30&#x60; articles.  Responses, according to the combination of params, are cached for 24 hours.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *ArticlesApiGetArticlesOpts - Optional Parameters:
- * @param "Page" (optional.Int32) -  Pagination page.  This param can be used in conjuction with all other params (except when asking for fresh and rising articles by themselves). 
- * @param "Tag" (optional.String) -  Adding this parameter will return articles that contain the requested tag.  This param can be used by itself, with `page` or with `top`. 
- * @param "Username" (optional.String) -  Adding this parameter will return articles belonging to a User or Organization ordered by descending `published_at`.  If `state=all` the number of items returned will be `1000` instead of the default `30`.  This param can be used by itself or only with `page` and `state`. 
- * @param "State" (optional.String) -  Adding this will allow the client to check which articles are fresh or rising.  If `state=fresh` the server will return published fresh articles. If `state=rising` the server will return published rising articles.  This param can only be used by itself or with `username` if set to `all`. 
- * @param "Top" (optional.Int32) -  Adding this will allow the client to return the most popular articles in the last `N` days.  `top` indicates the number of days since publication of the articles returned.  This param can only be used by itself or with `tag`. 
+ * @param "Page" (optional.Int32) -  Pagination page.  This param can be used in conjuction with all other params (except when asking for fresh and rising articles by themselves).
+ * @param "Tag" (optional.String) -  Adding this parameter will return articles that contain the requested tag.  This param can be used by itself, with `page` or with `top`.
+ * @param "Username" (optional.String) -  Adding this parameter will return articles belonging to a User or Organization ordered by descending `published_at`.  If `state=all` the number of items returned will be `1000` instead of the default `30`.  This param can be used by itself or only with `page` and `state`.
+ * @param "State" (optional.String) -  Adding this will allow the client to check which articles are fresh or rising.  If `state=fresh` the server will return published fresh articles. If `state=rising` the server will return published rising articles.  This param can only be used by itself or with `username` if set to `all`.
+ * @param "Top" (optional.Int32) -  Adding this will allow the client to return the most popular articles in the last `N` days.  `top` indicates the number of days since publication of the articles returned.  This param can only be used by itself or with `tag`.
 @return []ArticleIndex
 */
 func (a *ArticlesApiService) GetArticles(ctx _context.Context, localVarOptionals *ArticlesApiGetArticlesOpts) ([]ArticleIndex, *_nethttp.Response, error) {
@@ -385,13 +385,13 @@ func (a *ArticlesApiService) GetArticles(ctx _context.Context, localVarOptionals
 
 // ArticlesApiGetUserAllArticlesOpts Optional parameters for the method 'GetUserAllArticles'
 type ArticlesApiGetUserAllArticlesOpts struct {
-    Page optional.Int32
-    PerPage optional.Int32
+	Page    optional.Int32
+	PerPage optional.Int32
 }
 
 /*
 GetUserAllArticles User's all articles
-This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  It will return both published and unpublished articles with pagination.  Unpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.  By default a page will contain &#x60;30&#x60; articles. 
+This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  It will return both published and unpublished articles with pagination.  Unpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.  By default a page will contain &#x60;30&#x60; articles.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *ArticlesApiGetUserAllArticlesOpts - Optional Parameters:
  * @param "Page" (optional.Int32) -  Pagination page.
@@ -497,13 +497,13 @@ func (a *ArticlesApiService) GetUserAllArticles(ctx _context.Context, localVarOp
 
 // ArticlesApiGetUserArticlesOpts Optional parameters for the method 'GetUserArticles'
 type ArticlesApiGetUserArticlesOpts struct {
-    Page optional.Int32
-    PerPage optional.Int32
+	Page    optional.Int32
+	PerPage optional.Int32
 }
 
 /*
 GetUserArticles User's articles
-This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  Published articles will be in reverse chronological publication order.  It will return published articles with pagination. By default a page will contain &#x60;30&#x60; articles. 
+This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  Published articles will be in reverse chronological publication order.  It will return published articles with pagination. By default a page will contain &#x60;30&#x60; articles.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *ArticlesApiGetUserArticlesOpts - Optional Parameters:
  * @param "Page" (optional.Int32) -  Pagination page.
@@ -609,13 +609,13 @@ func (a *ArticlesApiService) GetUserArticles(ctx _context.Context, localVarOptio
 
 // ArticlesApiGetUserPublishedArticlesOpts Optional parameters for the method 'GetUserPublishedArticles'
 type ArticlesApiGetUserPublishedArticlesOpts struct {
-    Page optional.Int32
-    PerPage optional.Int32
+	Page    optional.Int32
+	PerPage optional.Int32
 }
 
 /*
 GetUserPublishedArticles User's published articles
-This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  Published articles will be in reverse chronological publication order.  It will return published articles with pagination. By default a page will contain &#x60;30&#x60; articles. 
+This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  Published articles will be in reverse chronological publication order.  It will return published articles with pagination. By default a page will contain &#x60;30&#x60; articles.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *ArticlesApiGetUserPublishedArticlesOpts - Optional Parameters:
  * @param "Page" (optional.Int32) -  Pagination page.
@@ -721,13 +721,13 @@ func (a *ArticlesApiService) GetUserPublishedArticles(ctx _context.Context, loca
 
 // ArticlesApiGetUserUnpublishedArticlesOpts Optional parameters for the method 'GetUserUnpublishedArticles'
 type ArticlesApiGetUserUnpublishedArticlesOpts struct {
-    Page optional.Int32
-    PerPage optional.Int32
+	Page    optional.Int32
+	PerPage optional.Int32
 }
 
 /*
 GetUserUnpublishedArticles User's unpublished articles
-This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  Unpublished articles will be in reverse chronological creation order.  It will return unpublished articles with pagination. By default a page will contain &#x60;30&#x60; articles. 
+This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  Unpublished articles will be in reverse chronological creation order.  It will return unpublished articles with pagination. By default a page will contain &#x60;30&#x60; articles.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *ArticlesApiGetUserUnpublishedArticlesOpts - Optional Parameters:
  * @param "Page" (optional.Int32) -  Pagination page.
@@ -833,16 +833,16 @@ func (a *ArticlesApiService) GetUserUnpublishedArticles(ctx _context.Context, lo
 
 // ArticlesApiUpdateArticleOpts Optional parameters for the method 'UpdateArticle'
 type ArticlesApiUpdateArticleOpts struct {
-    ArticleUpdate optional.Interface
+	ArticleUpdate optional.Interface
 }
 
 /*
 UpdateArticle Update an article
-This endpoint allows the client to updated an existing article.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  ### Rate limiting  There are no limits on the amount of updates.  ### Additional resources  - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb) 
+This endpoint allows the client to updated an existing article.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  ### Rate limiting  There are no limits on the amount of updates.  ### Additional resources  - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id of the article
  * @param optional nil or *ArticlesApiUpdateArticleOpts - Optional Parameters:
- * @param "ArticleUpdate" (optional.Interface of ArticleUpdate) -  Article params to update.  *Note: if the article contains a front matter in its body, its front matter properties will still take precedence over any JSON equivalent params, which means that the full body_markdown with the modified front matter params needs to be provided for an update to be successful* 
+ * @param "ArticleUpdate" (optional.Interface of ArticleUpdate) -  Article params to update.  *Note: if the article contains a front matter in its body, its front matter properties will still take precedence over any JSON equivalent params, which means that the full body_markdown with the modified front matter params needs to be provided for an update to be successful*
 @return ArticleShow
 */
 func (a *ArticlesApiService) UpdateArticle(ctx _context.Context, id int32, localVarOptionals *ArticlesApiUpdateArticleOpts) (ArticleShow, *_nethttp.Response, error) {

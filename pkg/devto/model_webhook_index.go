@@ -9,17 +9,19 @@
  */
 
 package devto
+
 import (
 	"time"
 )
+
 // WebhookIndex Webhook
 type WebhookIndex struct {
 	TypeOf string `json:"type_of,omitempty"`
-	Id int64 `json:"id,omitempty"`
+	Id     int64  `json:"id,omitempty"`
 	// The name of the requester, eg. \"DEV\"
-	Source string `json:"source,omitempty"`
+	Source    string `json:"source,omitempty"`
 	TargetUrl string `json:"target_url,omitempty"`
 	// An array of events identifiers
-	Events []string `json:"events,omitempty"`
+	Events    []string  `json:"events,omitempty"`
 	CreatedAt time.Time `json:"created_at,omitempty"`
 }

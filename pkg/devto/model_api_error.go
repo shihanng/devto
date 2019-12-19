@@ -9,8 +9,9 @@
  */
 
 package devto
+
 // ApiError struct for ApiError
 type ApiError struct {
-	Error string `json:"error"`
-	Status int32 `json:"status"`
+	Error  string `json:"error"`
+	Status int32  `json:"status"`
 }

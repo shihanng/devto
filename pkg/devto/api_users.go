@@ -12,10 +12,10 @@ package devto
 
 import (
 	_context "context"
+	"github.com/antihax/optional"
 	_ioutil "io/ioutil"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"github.com/antihax/optional"
 )
 
 // Linger please
@@ -28,13 +28,13 @@ type UsersApiService service
 
 // UsersApiGetUserAllArticlesOpts Optional parameters for the method 'GetUserAllArticles'
 type UsersApiGetUserAllArticlesOpts struct {
-    Page optional.Int32
-    PerPage optional.Int32
+	Page    optional.Int32
+	PerPage optional.Int32
 }
 
 /*
 GetUserAllArticles User's all articles
-This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  It will return both published and unpublished articles with pagination.  Unpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.  By default a page will contain &#x60;30&#x60; articles. 
+This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  It will return both published and unpublished articles with pagination.  Unpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.  By default a page will contain &#x60;30&#x60; articles.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *UsersApiGetUserAllArticlesOpts - Optional Parameters:
  * @param "Page" (optional.Int32) -  Pagination page.
@@ -140,13 +140,13 @@ func (a *UsersApiService) GetUserAllArticles(ctx _context.Context, localVarOptio
 
 // UsersApiGetUserArticlesOpts Optional parameters for the method 'GetUserArticles'
 type UsersApiGetUserArticlesOpts struct {
-    Page optional.Int32
-    PerPage optional.Int32
+	Page    optional.Int32
+	PerPage optional.Int32
 }
 
 /*
 GetUserArticles User's articles
-This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  Published articles will be in reverse chronological publication order.  It will return published articles with pagination. By default a page will contain &#x60;30&#x60; articles. 
+This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  Published articles will be in reverse chronological publication order.  It will return published articles with pagination. By default a page will contain &#x60;30&#x60; articles.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *UsersApiGetUserArticlesOpts - Optional Parameters:
  * @param "Page" (optional.Int32) -  Pagination page.
@@ -252,13 +252,13 @@ func (a *UsersApiService) GetUserArticles(ctx _context.Context, localVarOptional
 
 // UsersApiGetUserPublishedArticlesOpts Optional parameters for the method 'GetUserPublishedArticles'
 type UsersApiGetUserPublishedArticlesOpts struct {
-    Page optional.Int32
-    PerPage optional.Int32
+	Page    optional.Int32
+	PerPage optional.Int32
 }
 
 /*
 GetUserPublishedArticles User's published articles
-This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  Published articles will be in reverse chronological publication order.  It will return published articles with pagination. By default a page will contain &#x60;30&#x60; articles. 
+This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  Published articles will be in reverse chronological publication order.  It will return published articles with pagination. By default a page will contain &#x60;30&#x60; articles.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *UsersApiGetUserPublishedArticlesOpts - Optional Parameters:
  * @param "Page" (optional.Int32) -  Pagination page.
@@ -364,13 +364,13 @@ func (a *UsersApiService) GetUserPublishedArticles(ctx _context.Context, localVa
 
 // UsersApiGetUserUnpublishedArticlesOpts Optional parameters for the method 'GetUserUnpublishedArticles'
 type UsersApiGetUserUnpublishedArticlesOpts struct {
-    Page optional.Int32
-    PerPage optional.Int32
+	Page    optional.Int32
+	PerPage optional.Int32
 }
 
 /*
 GetUserUnpublishedArticles User's unpublished articles
-This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  Unpublished articles will be in reverse chronological creation order.  It will return unpublished articles with pagination. By default a page will contain &#x60;30&#x60; articles. 
+This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.  \&quot;Articles\&quot; are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.  Unpublished articles will be in reverse chronological creation order.  It will return unpublished articles with pagination. By default a page will contain &#x60;30&#x60; articles.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *UsersApiGetUserUnpublishedArticlesOpts - Optional Parameters:
  * @param "Page" (optional.Int32) -  Pagination page.

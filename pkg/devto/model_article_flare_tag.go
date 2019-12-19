@@ -9,6 +9,7 @@
  */
 
 package devto
+
 // ArticleFlareTag Flare tag of the article
 type ArticleFlareTag struct {
 	Name string `json:"name,omitempty"`

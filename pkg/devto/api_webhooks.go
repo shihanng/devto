@@ -12,12 +12,12 @@ package devto
 
 import (
 	_context "context"
+	"fmt"
+	"github.com/antihax/optional"
 	_ioutil "io/ioutil"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"fmt"
 	"strings"
-	"github.com/antihax/optional"
 )
 
 // Linger please
@@ -30,12 +30,12 @@ type WebhooksApiService service
 
 // WebhooksApiCreateWebhookOpts Optional parameters for the method 'CreateWebhook'
 type WebhooksApiCreateWebhookOpts struct {
-    WebhookCreate optional.Interface
+	WebhookCreate optional.Interface
 }
 
 /*
 CreateWebhook Create a new webhook
-This endpoint allows the client to create a new webhook.  \&quot;Webhooks\&quot; are used to register HTTP endpoints that will be called once a relevant event is triggered inside the web application, events like &#x60;article_created&#x60;, &#x60;article_updated&#x60;. 
+This endpoint allows the client to create a new webhook.  \&quot;Webhooks\&quot; are used to register HTTP endpoints that will be called once a relevant event is triggered inside the web application, events like &#x60;article_created&#x60;, &#x60;article_updated&#x60;.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *WebhooksApiCreateWebhookOpts - Optional Parameters:
  * @param "WebhookCreate" (optional.Interface of WebhookCreate) -  Webhook to create
@@ -173,7 +173,7 @@ func (a *WebhooksApiService) CreateWebhook(ctx _context.Context, localVarOptiona
 
 /*
 DeleteWebhook A webhook endpoint
-This endpoint allows the client to delete a single webhook given its &#x60;id&#x60;. 
+This endpoint allows the client to delete a single webhook given its &#x60;id&#x60;.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id of the webhook
 */
@@ -271,7 +271,7 @@ func (a *WebhooksApiService) DeleteWebhook(ctx _context.Context, id int32) (*_ne
 
 /*
 GetWebhookById A webhook endpoint
-This endpoint allows the client to retrieve a single webhook given its &#x60;id&#x60;. 
+This endpoint allows the client to retrieve a single webhook given its &#x60;id&#x60;.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id of the webhook
 @return WebhookShow
@@ -390,7 +390,7 @@ func (a *WebhooksApiService) GetWebhookById(ctx _context.Context, id int32) (Web
 
 /*
 GetWebhooks Webhooks
-This endpoint allows the client to retrieve a list of webhooks they have previously registered.  \&quot;Webhooks\&quot; are used to register HTTP endpoints that will be called once a relevant event is triggered inside the web application, events like &#x60;article_created&#x60;, &#x60;article_updated&#x60;.  It will return all webhooks, without pagination. 
+This endpoint allows the client to retrieve a list of webhooks they have previously registered.  \&quot;Webhooks\&quot; are used to register HTTP endpoints that will be called once a relevant event is triggered inside the web application, events like &#x60;article_created&#x60;, &#x60;article_updated&#x60;.  It will return all webhooks, without pagination.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return []WebhookIndex
 */

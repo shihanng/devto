@@ -10,4 +10,5 @@ gen:
 		-i $(api_doc) \
 		-g go \
 		-o /local/pkg/devto \
-		-c /local/openapi-generator-config.yml
+		-c /local/openapi-generator-config.yml && \
+		gofmt -w pkg/devto/..
