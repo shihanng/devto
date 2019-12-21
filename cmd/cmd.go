@@ -2,47 +2,73 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/cockroachdb/errors"
 	"github.com/shihanng/devto/pkg/devto"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"go.uber.org/zap"
 )
 
 const (
 	flagAPIKey = "api-key"
+	flagDebug  = "debug"
 )
 
-func New() *cobra.Command {
+func New() (*cobra.Command, func()) {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 	viper.SetEnvPrefix("DEVTO")
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 
+	r := &runner{}
+
 	listCmd := &cobra.Command{
 		Use:   "list",
 		Short: "List published articles on dev.to",
-		RunE:  listRunE,
+		RunE:  r.listRunE,
 	}
 
 	rootCmd := &cobra.Command{
 		Use:               "devto",
 		Short:             "Publish to dev.to from your terminal",
-		PersistentPreRunE: rootRunE,
+		PersistentPreRunE: r.rootRunE,
 	}
 
 	rootCmd.PersistentFlags().String(flagAPIKey, "", "API key for authentication")
+	rootCmd.PersistentFlags().BoolP(flagDebug, "d", false, "Print debug log on stderr")
 	rootCmd.AddCommand(listCmd)
-
 	viper.BindPFlag(flagAPIKey, rootCmd.PersistentFlags().Lookup(flagAPIKey))
 
-	return rootCmd
+	return rootCmd, func() { r.log.Sync() }
 }
 
-func rootRunE(cmd *cobra.Command, args []string) error {
+type runner struct {
+	log *zap.SugaredLogger
+}
+
+func (r *runner) rootRunE(cmd *cobra.Command, args []string) error {
+	// Setup logger
+	logConfig := zap.NewDevelopmentConfig()
+
+	isDebug, err := cmd.Parent().PersistentFlags().GetBool(flagDebug)
+	if err != nil {
+		return errors.Wrap(err, "cmd: get flag --debug")
+	}
+
+	if !isDebug {
+		logConfig.Level = zap.NewAtomicLevelAt(zap.InfoLevel)
+	}
+
+	logger, err := logConfig.Build()
+	if err != nil {
+		return errors.Wrap(err, "cmd: create new logger")
+	}
+
+	r.log = logger.Sugar()
+
 	if err := viper.ReadInConfig(); err != nil {
 		if !errors.As(err, &viper.ConfigFileNotFoundError{}) {
 			return errors.Wrap(err, "cmd: read config")
@@ -60,7 +86,7 @@ func rootRunE(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func listRunE(cmd *cobra.Command, args []string) error {
+func (r *runner) listRunE(cmd *cobra.Command, args []string) error {
 	apiKey := context.WithValue(context.Background(), devto.ContextAPIKey, devto.APIKey{
 		Key: viper.GetString(flagAPIKey),
 	})
@@ -68,11 +94,11 @@ func listRunE(cmd *cobra.Command, args []string) error {
 	client := devto.NewAPIClient(devto.NewConfiguration())
 	articles, _, err := client.ArticlesApi.GetUserAllArticles(apiKey, nil)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "cmd: get articles")
 	}
 
 	for _, a := range articles {
-		fmt.Println(a.Title, a.Id)
+		r.log.Infow("", "title", a.Title, "ID", a.Id)
 	}
 
 	return nil

@@ -3,5 +3,7 @@ package main
 import "github.com/shihanng/devto/cmd"
 
 func main() {
-	cmd.New().Execute()
+	c, sync := cmd.New()
+	c.Execute()
+	sync()
 }
