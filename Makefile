@@ -12,3 +12,6 @@ gen:
 		-o /local/pkg/devto \
 		-c /local/openapi-generator-config.yml && \
 		gofmt -w pkg/devto/..
+
+lint:
+	docker run --rm -v $$(pwd):/app -w /app golangci/golangci-lint:latest golangci-lint run -v

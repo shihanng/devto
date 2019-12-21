@@ -1,0 +1,6 @@
+run:
+  skip-dirs:
+    - pkg/devto
+
+linters:
+  enable-all: true

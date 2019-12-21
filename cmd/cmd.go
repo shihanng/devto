@@ -40,9 +40,10 @@ func New() (*cobra.Command, func()) {
 	rootCmd.PersistentFlags().String(flagAPIKey, "", "API key for authentication")
 	rootCmd.PersistentFlags().BoolP(flagDebug, "d", false, "Print debug log on stderr")
 	rootCmd.AddCommand(listCmd)
-	viper.BindPFlag(flagAPIKey, rootCmd.PersistentFlags().Lookup(flagAPIKey))
 
-	return rootCmd, func() { r.log.Sync() }
+	_ = viper.BindPFlag(flagAPIKey, rootCmd.PersistentFlags().Lookup(flagAPIKey))
+
+	return rootCmd, func() { _ = r.log.Sync() }
 }
 
 type runner struct {
@@ -92,6 +93,7 @@ func (r *runner) listRunE(cmd *cobra.Command, args []string) error {
 	})
 
 	client := devto.NewAPIClient(devto.NewConfiguration())
+
 	articles, _, err := client.ArticlesApi.GetUserAllArticles(apiKey, nil)
 	if err != nil {
 		return errors.Wrap(err, "cmd: get articles")
