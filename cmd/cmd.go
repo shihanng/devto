@@ -4,6 +4,7 @@ import (
 	"context"
 	"strings"
 
+	"github.com/antihax/optional"
 	"github.com/cockroachdb/errors"
 	"github.com/shihanng/devto/pkg/devto"
 	"github.com/spf13/cobra"
@@ -31,6 +32,12 @@ func New() (*cobra.Command, func()) {
 		RunE:  r.listRunE,
 	}
 
+	submitCmd := &cobra.Command{
+		Use:   "submit",
+		Short: "Submit article to dev.to",
+		RunE:  r.submitRunE,
+	}
+
 	rootCmd := &cobra.Command{
 		Use:               "devto",
 		Short:             "Publish to dev.to from your terminal",
@@ -39,7 +46,10 @@ func New() (*cobra.Command, func()) {
 
 	rootCmd.PersistentFlags().String(flagAPIKey, "", "API key for authentication")
 	rootCmd.PersistentFlags().BoolP(flagDebug, "d", false, "Print debug log on stderr")
-	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(
+		listCmd,
+		submitCmd,
+	)
 
 	_ = viper.BindPFlag(flagAPIKey, rootCmd.PersistentFlags().Lookup(flagAPIKey))
 
@@ -102,6 +112,33 @@ func (r *runner) listRunE(cmd *cobra.Command, args []string) error {
 	for _, a := range articles {
 		r.log.Infow("", "title", a.Title, "ID", a.Id)
 	}
+
+	return nil
+}
+
+func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
+	apiKey := context.WithValue(context.Background(), devto.ContextAPIKey, devto.APIKey{
+		Key: viper.GetString(flagAPIKey),
+	})
+
+	client := devto.NewAPIClient(devto.NewConfiguration())
+
+	article := &devto.ArticlesApiCreateArticleOpts{
+		ArticleCreate: optional.NewInterface(devto.ArticleCreate{
+			Article: devto.ArticleCreateArticle{
+				Title:        "Test",
+				BodyMarkdown: "This is a test",
+			},
+		},
+		),
+	}
+
+	submitted, _, err := client.ArticlesApi.CreateArticle(apiKey, article)
+	if err != nil {
+		return errors.Wrap(err, "cmd: get articles")
+	}
+
+	r.log.Info(submitted)
 
 	return nil
 }
