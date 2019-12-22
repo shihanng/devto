@@ -34,10 +34,10 @@ type ArticleShow struct {
 	CreatedAt              time.Time `json:"created_at"`
 	EditedAt               time.Time `json:"edited_at"`
 	CrosspostedAt          time.Time `json:"crossposted_at"`
-	PublishedAt            time.Time `json:"published_at"`
+	PublishedAt            string    `json:"published_at"`
 	LastCommentAt          time.Time `json:"last_comment_at"`
 	// Crossposting or published date time
-	PublishedTimestamp time.Time           `json:"published_timestamp"`
+	PublishedTimestamp string              `json:"published_timestamp"`
 	BodyHtml           string              `json:"body_html"`
 	BodyMarkdown       string              `json:"body_markdown"`
 	User               ArticleUser         `json:"user"`
