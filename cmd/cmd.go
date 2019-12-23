@@ -6,6 +6,7 @@ import (
 
 	"github.com/antihax/optional"
 	"github.com/cockroachdb/errors"
+	"github.com/shihanng/devto/pkg/article"
 	"github.com/shihanng/devto/pkg/devto"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -33,9 +34,10 @@ func New() (*cobra.Command, func()) {
 	}
 
 	submitCmd := &cobra.Command{
-		Use:   "submit",
+		Use:   "submit <Markdown file>",
 		Short: "Submit article to dev.to",
 		RunE:  r.submitRunE,
+		Args:  cobra.ExactArgs(1),
 	}
 
 	rootCmd := &cobra.Command{
@@ -121,13 +123,18 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 		Key: viper.GetString(flagAPIKey),
 	})
 
+	body, err := article.Read(args[0])
+	if err != nil {
+		return err
+	}
+
 	client := devto.NewAPIClient(devto.NewConfiguration())
 
 	article := &devto.ArticlesApiCreateArticleOpts{
 		ArticleCreate: optional.NewInterface(devto.ArticleCreate{
 			Article: devto.ArticleCreateArticle{
 				Title:        "Test",
-				BodyMarkdown: "This is a test",
+				BodyMarkdown: body,
 			},
 		},
 		),
