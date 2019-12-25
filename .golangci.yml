@@ -11,3 +11,9 @@ issues:
       linters:
         - scopelint
       text: Using the variable on range scope `(tc|tt)` in function literal
+
+    # Usually we have table driven tests which make the test function too long.
+    - path: _test\.go
+      linters:
+        - funlen
+      text: Function '.+' is too long

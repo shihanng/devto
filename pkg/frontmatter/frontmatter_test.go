@@ -42,6 +42,34 @@ frontmatter
 			want1:     []byte(`markdown`),
 			assertion: assert.NoError,
 		},
+		{
+			name: "no second triple-dashed",
+			args: args{
+				content: []byte(`---
+frontmatter
+markdown`),
+			},
+			want: []byte(`---
+frontmatter
+markdown`),
+			want1:     nil,
+			assertion: assert.NoError,
+		},
+		{
+			name: "begin with 3 chars",
+			args: args{
+				content: []byte(`+++
+frontmatter
+---
+markdown`),
+			},
+			want: nil,
+			want1: []byte(`+++
+frontmatter
+---
+markdown`),
+			assertion: assert.NoError,
+		},
 	}
 
 	for _, tt := range tests {

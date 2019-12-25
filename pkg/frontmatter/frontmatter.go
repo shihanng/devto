@@ -50,6 +50,8 @@ func Split(content []byte) ([]byte, []byte, error) {
 	return fm.Bytes(), md.Bytes(), nil
 }
 
+// Modified from https://golang.org/src/bufio/scan.go?s=11802:11880#L335
+// to include newline character
 func scanLines(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	if atEOF && len(data) == 0 {
 		return 0, nil, nil
