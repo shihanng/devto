@@ -133,7 +133,6 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 	article := &devto.ArticlesApiCreateArticleOpts{
 		ArticleCreate: optional.NewInterface(devto.ArticleCreate{
 			Article: devto.ArticleCreateArticle{
-				Title:        "Test",
 				BodyMarkdown: body,
 			},
 		},
@@ -145,7 +144,7 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "cmd: get articles")
 	}
 
-	r.log.Info(submitted)
+	r.log.Info(submitted.Id)
 
 	return nil
 }

@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 
 	"github.com/cockroachdb/errors"
+	"github.com/shihanng/devto/pkg/frontmatter"
 )
 
 func Read(filename string) (string, error) {
@@ -12,5 +13,12 @@ func Read(filename string) (string, error) {
 		return "", errors.Wrap(err, "article: read file")
 	}
 
-	return string(content), nil
+	fm, md, err := frontmatter.Split(content)
+	if err != nil {
+		return "", err
+	}
+
+	_ = fm
+
+	return string(append(fm, md...)), nil
 }
