@@ -11,7 +11,9 @@ require (
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.3.2
+	github.com/stretchr/testify v1.4.0
 	go.uber.org/zap v1.13.0
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
 	golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // indirect
+	gopkg.in/yaml.v2 v2.2.7
 )

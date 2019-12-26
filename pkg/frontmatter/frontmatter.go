@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/cockroachdb/errors"
+	"gopkg.in/yaml.v2"
 )
 
 const dashes = `---`
@@ -67,4 +68,25 @@ func scanLines(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	}
 	// Request more data.
 	return 0, nil, nil
+}
+
+// FrontMatter follows the specifications described in https://dev.to/p/editor_guide
+type FrontMatter struct {
+	Title        string
+	Published    bool
+	Description  string
+	Tags         string
+	CanonicalURL string
+	CoverImage   string
+	Series       string
+}
+
+func GetFrontMatter(data []byte) (*FrontMatter, error) {
+	fm := FrontMatter{}
+
+	if err := yaml.Unmarshal(data, &fm); err != nil {
+		return nil, errors.Wrap(err, "frontmatter: unmarshal front matter part")
+	}
+
+	return &fm, nil
 }
