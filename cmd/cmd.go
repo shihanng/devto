@@ -123,11 +123,6 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 		Key: viper.GetString(flagAPIKey),
 	})
 
-	body, err := article.Read(args[0])
-	if err != nil {
-		return err
-	}
-
 	client := devto.NewAPIClient(devto.NewConfiguration())
 
 	v := viper.New()
@@ -141,6 +136,12 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 	}
 
 	articleID := v.GetInt32("article_id")
+	images := v.GetStringMapString("images")
+
+	body, err := article.Read(args[0], images)
+	if err != nil {
+		return err
+	}
 
 	if articleID == 0 {
 		article := &devto.ArticlesApiCreateArticleOpts{

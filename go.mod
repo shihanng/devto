@@ -9,9 +9,11 @@ require (
 	github.com/cockroachdb/logtags v0.0.0-20190617123548-eb05cc24525f // indirect
 	github.com/getsentry/raven-go v0.2.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
+	github.com/shihanng/md v0.0.0-20200106122920-63d8ee159497
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.3.2
 	github.com/stretchr/testify v1.4.0
+	github.com/yuin/goldmark v1.1.20
 	go.uber.org/zap v1.13.0
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
 	golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // indirect
