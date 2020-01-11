@@ -2,11 +2,8 @@ package article
 
 import (
 	"bytes"
-	"fmt"
-	"io/ioutil"
 
 	"github.com/cockroachdb/errors"
-	"github.com/shihanng/devto/pkg/frontmatter"
 	"github.com/shihanng/md"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/parser"
@@ -16,22 +13,20 @@ import (
 )
 
 func Read(filename string, images map[string]string) (string, error) {
-	content, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return "", errors.Wrap(err, "article: read file")
-	}
-
-	fmBytes, mdBytes, err := frontmatter.Split(content)
+	parsed, err := Parse(filename)
 	if err != nil {
 		return "", err
 	}
 
-	mdBytes = Render(mdBytes, images)
+	parsed.markdownSource, err = Render(parsed.markdownSource, images)
+	if err != nil {
+		return "", err
+	}
 
-	return string(append(fmBytes, mdBytes...)), nil
+	return parsed.Content()
 }
 
-func Render(body []byte, images map[string]string) []byte {
+func Render(body []byte, images map[string]string) ([]byte, error) {
 	var buf bytes.Buffer
 	reader := text.NewReader(body)
 
@@ -59,9 +54,9 @@ func Render(body []byte, images map[string]string) []byte {
 		return ast.WalkContinue, nil
 	})
 
-	err := r.Render(&buf, body, n)
-	if err != nil {
-		fmt.Println(err)
+	if err := r.Render(&buf, body, n); err != nil {
+		return nil, errors.Wrap(err, "article: render markdown")
 	}
-	return buf.Bytes()
+
+	return buf.Bytes(), nil
 }
