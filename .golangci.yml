@@ -17,3 +17,8 @@ issues:
       linters:
         - funlen
       text: Function '.+' is too long
+
+    - path: cmd.go
+      linters:
+        - gomnd
+      text: "Magic number: \\d+, in <argument> detected"

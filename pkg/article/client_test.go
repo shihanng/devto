@@ -15,7 +15,10 @@ import (
 )
 
 func TestSubmitArticle(t *testing.T) {
-	apiKey := "abc1234"
+	const (
+		apiKey    string = "abc1234"
+		articleID int32  = 123
+	)
 
 	dir, err := ioutil.TempDir("", "devto_test")
 	require.NoError(t, err)
@@ -39,15 +42,15 @@ func TestSubmitArticle(t *testing.T) {
 			},
 		},
 		),
-	}).Return(devto.ArticleShow{Id: 1}, nil, nil)
-	mockAPIClient.EXPECT().UpdateArticle(c.contextWithAPIKey(), int32(1), &devto.ArticlesApiUpdateArticleOpts{
+	}).Return(devto.ArticleShow{Id: articleID}, nil, nil)
+	mockAPIClient.EXPECT().UpdateArticle(c.contextWithAPIKey(), articleID, &devto.ArticlesApiUpdateArticleOpts{
 		ArticleUpdate: optional.NewInterface(devto.ArticleUpdate{
 			Article: devto.ArticleUpdateArticle{
 				BodyMarkdown: "---\n---\ntest",
 			},
 		},
 		),
-	}).Return(devto.ArticleShow{Id: 1}, nil, nil)
+	}).Return(devto.ArticleShow{Id: articleID}, nil, nil)
 
 	c.api = mockAPIClient
 
