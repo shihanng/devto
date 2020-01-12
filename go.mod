@@ -10,6 +10,7 @@ require (
 	github.com/getsentry/raven-go v0.2.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/gohugoio/hugo v0.62.2
+	github.com/golang/mock v1.3.1
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/shihanng/md v0.0.0-20200106122920-63d8ee159497
 	github.com/spf13/cobra v0.0.5

@@ -4,7 +4,6 @@ import (
 	"context"
 	"strings"
 
-	"github.com/antihax/optional"
 	"github.com/cockroachdb/errors"
 	"github.com/shihanng/devto/pkg/article"
 	"github.com/shihanng/devto/pkg/devto"
@@ -119,67 +118,10 @@ func (r *runner) listRunE(cmd *cobra.Command, args []string) error {
 }
 
 func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
-	apiKey := context.WithValue(context.Background(), devto.ContextAPIKey, devto.APIKey{
-		Key: viper.GetString(flagAPIKey),
-	})
-
-	client := devto.NewAPIClient(devto.NewConfiguration())
-
-	v := viper.New()
-	v.SetConfigName("submission")
-	v.AddConfigPath(".")
-
-	if err := v.ReadInConfig(); err != nil {
-		if !errors.As(err, &viper.ConfigFileNotFoundError{}) {
-			return errors.Wrap(err, "cmd: read config")
-		}
-	}
-
-	articleID := v.GetInt32("article_id")
-	images := v.GetStringMapString("images")
-
-	body, err := article.Read(args[0], images)
+	client, err := article.NewClient(viper.GetString(flagAPIKey), args[0])
 	if err != nil {
 		return err
 	}
 
-	if articleID == 0 {
-		article := &devto.ArticlesApiCreateArticleOpts{
-			ArticleCreate: optional.NewInterface(devto.ArticleCreate{
-				Article: devto.ArticleCreateArticle{
-					BodyMarkdown: body,
-				},
-			},
-			),
-		}
-
-		submitted, _, err := client.ArticlesApi.CreateArticle(apiKey, article)
-		if err != nil {
-			return errors.Wrap(err, "cmd: create articles")
-		}
-
-		v.Set("article_id", submitted.Id)
-	} else {
-		article := &devto.ArticlesApiUpdateArticleOpts{
-			ArticleUpdate: optional.NewInterface(devto.ArticleUpdate{
-				Article: devto.ArticleUpdateArticle{
-					BodyMarkdown: body,
-				},
-			},
-			),
-		}
-
-		submitted, _, err := client.ArticlesApi.UpdateArticle(apiKey, articleID, article)
-		if err != nil {
-			return errors.Wrap(err, "cmd: update articles")
-		}
-
-		_ = submitted
-	}
-
-	if err := v.WriteConfigAs("submission.yml"); err != nil {
-		return errors.Wrap(err, "cmd: write config")
-	}
-
-	return nil
+	return client.SubmitArticle()
 }
