@@ -26,6 +26,7 @@ tags: "tag-one, tag-two"
 ![image](./image.png)
 `),
 	}
+
 	assert.NoError(t, err)
 	assert.Equal(t, expected, actual)
 

@@ -62,12 +62,15 @@ func (c *Client) SubmitArticle() error {
 			),
 		}
 
-		submitted, _, err := c.api.CreateArticle(c.contextWithAPIKey(), article)
+		submitted, resp, err := c.api.CreateArticle(c.contextWithAPIKey(), article)
 		if err != nil {
 			return errors.Wrap(err, "article: create article in dev.to")
 		}
 
+		defer resp.Body.Close()
+
 		c.setConfigArticleID(submitted.Id)
+
 		return c.updateConfig()
 	default:
 		articleID := c.configArticleID()
@@ -81,8 +84,14 @@ func (c *Client) SubmitArticle() error {
 			),
 		}
 
-		_, _, err := c.api.UpdateArticle(c.contextWithAPIKey(), articleID, article)
-		return errors.Wrapf(err, "article: update article %d in dev.to", articleID)
+		_, resp, err := c.api.UpdateArticle(c.contextWithAPIKey(), articleID, article)
+		if err != nil {
+			return errors.Wrapf(err, "article: update article %d in dev.to", articleID)
+		}
+
+		defer resp.Body.Close()
+
+		return nil
 	}
 }
 

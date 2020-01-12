@@ -11,7 +11,8 @@ import (
 )
 
 // Parse parses the article and divides the content into front matter and markdown.
-// Heavily inspired by: https://github.com/gohugoio/hugo/blob/94cfdf6befd657e46c9458b23f17d851cd2f7037/commands/convert.go#L207-L250
+// Heavily inspired by:
+// https://github.com/gohugoio/hugo/blob/94cfdf6befd657e46c9458b23f17d851cd2f7037/commands/convert.go#L207-L250
 func Parse(filename string) (*Parsed, error) {
 	f, err := os.Open(filename)
 	if err != nil {
@@ -35,6 +36,7 @@ func Parse(filename string) (*Parsed, error) {
 			parsed.frontMatterFormat = metadecoders.FormatFromFrontMatterType(item.Type)
 			parsed.frontMatterSource = item.Val
 		}
+
 		return true
 	}
 

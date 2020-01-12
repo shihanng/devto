@@ -19,6 +19,7 @@ func TestSubmitArticle(t *testing.T) {
 
 	dir, err := ioutil.TempDir("", "devto_test")
 	require.NoError(t, err)
+
 	defer os.RemoveAll(dir)
 
 	filename := filepath.Join(dir, "test.md")
@@ -47,6 +48,7 @@ func TestSubmitArticle(t *testing.T) {
 		},
 		),
 	}).Return(devto.ArticleShow{Id: 1}, nil, nil)
+
 	c.api = mockAPIClient
 
 	assert.NoError(t, c.SubmitArticle())

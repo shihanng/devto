@@ -28,6 +28,7 @@ func Read(filename string, images map[string]string) (string, error) {
 
 func Render(body []byte, images map[string]string) ([]byte, error) {
 	var buf bytes.Buffer
+
 	reader := text.NewReader(body)
 
 	p := parser.NewParser(
@@ -44,7 +45,7 @@ func Render(body []byte, images map[string]string) ([]byte, error) {
 	n := p.Parse(reader)
 	r := renderer.NewRenderer(renderer.WithNodeRenderers(util.Prioritized(&md.Renderer{}, 100)))
 
-	ast.Walk(n, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
+	if err := ast.Walk(n, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
 		if entering && node.Kind() == ast.KindImage {
 			n := node.(*ast.Image)
 			if replace, ok := images[string(n.Destination)]; ok {
@@ -52,7 +53,9 @@ func Render(body []byte, images map[string]string) ([]byte, error) {
 			}
 		}
 		return ast.WalkContinue, nil
-	})
+	}); err != nil {
+		return nil, errors.Wrap(err, "article: walk ast")
+	}
 
 	if err := r.Render(&buf, body, n); err != nil {
 		return nil, errors.Wrap(err, "article: render markdown")
