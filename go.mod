@@ -19,5 +19,5 @@ require (
 	go.uber.org/zap v1.13.0
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
 	golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // indirect
-	gopkg.in/yaml.v2 v2.2.7
+	gopkg.in/yaml.v2 v2.2.7 // indirect
 )
