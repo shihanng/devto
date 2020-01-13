@@ -28,7 +28,7 @@ func TestSubmitArticle(t *testing.T) {
 	filename := filepath.Join(dir, "test.md")
 	require.NoError(t, ioutil.WriteFile(filename, []byte("---\n---\ntest"), 0644))
 
-	c, err := NewClient(apiKey, filename)
+	c, err := NewClient(apiKey, SetConfig(filename))
 	assert.NoError(t, err)
 
 	ctrl := gomock.NewController(t)
@@ -54,6 +54,6 @@ func TestSubmitArticle(t *testing.T) {
 
 	c.api = mockAPIClient
 
-	assert.NoError(t, c.SubmitArticle())
-	assert.NoError(t, c.SubmitArticle())
+	assert.NoError(t, c.SubmitArticle(filename))
+	assert.NoError(t, c.SubmitArticle(filename))
 }

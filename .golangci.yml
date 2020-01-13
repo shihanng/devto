@@ -22,3 +22,9 @@ issues:
       linters:
         - gomnd
       text: "Magic number: \\d+, in <argument> detected"
+
+    # Closed in github.com/shihanng/devto/pkg/devto
+    - path: pkg/article/client.go
+      linters:
+        - bodyclose
+      text: "response body must be closed"

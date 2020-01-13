@@ -118,10 +118,12 @@ func (r *runner) listRunE(cmd *cobra.Command, args []string) error {
 }
 
 func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
-	client, err := article.NewClient(viper.GetString(flagAPIKey), args[0])
+	filename := args[0]
+
+	client, err := article.NewClient(viper.GetString(flagAPIKey), article.SetConfig(filename))
 	if err != nil {
 		return err
 	}
 
-	return client.SubmitArticle()
+	return client.SubmitArticle(filename)
 }

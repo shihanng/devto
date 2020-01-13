@@ -19,22 +19,23 @@ type apiClient interface {
 }
 
 type Client struct {
-	api      apiClient
-	apiKey   string
-	viper    *viper.Viper
-	filename string
+	api    apiClient
+	apiKey string
+	viper  *viper.Viper
 }
 
-func NewClient(apiKey, filename string) (*Client, error) {
+func NewClient(apiKey string, opts ...Option) (*Client, error) {
 	c := Client{
-		api:      devto.NewAPIClient(devto.NewConfiguration()).ArticlesApi,
-		apiKey:   apiKey,
-		viper:    viper.New(),
-		filename: filename,
+		api:    devto.NewAPIClient(devto.NewConfiguration()).ArticlesApi,
+		apiKey: apiKey,
+		viper:  viper.New(),
 	}
 
 	c.viper = viper.New()
-	c.viper.SetConfigFile(configFrom(filename))
+
+	for _, opt := range opts {
+		opt(&c)
+	}
 
 	if err := c.viper.ReadInConfig(); err != nil {
 		if !os.IsNotExist(err) {
@@ -45,8 +46,16 @@ func NewClient(apiKey, filename string) (*Client, error) {
 	return &c, nil
 }
 
-func (c *Client) SubmitArticle() error {
-	body, err := Read(c.filename, c.configImageLinks())
+type Option func(*Client)
+
+func SetConfig(filename string) Option {
+	return func(c *Client) {
+		c.viper.SetConfigFile(configFrom(filename))
+	}
+}
+
+func (c *Client) SubmitArticle(filename string) error {
+	body, err := Read(filename, c.configImageLinks())
 	if err != nil {
 		return err
 	}
@@ -62,16 +71,14 @@ func (c *Client) SubmitArticle() error {
 			),
 		}
 
-		submitted, resp, err := c.api.CreateArticle(c.contextWithAPIKey(), article)
+		submitted, _, err := c.api.CreateArticle(c.contextWithAPIKey(), article)
 		if err != nil {
 			return errors.Wrap(err, "article: create article in dev.to")
 		}
 
-		defer resp.Body.Close()
-
 		c.setConfigArticleID(submitted.Id)
 
-		return c.updateConfig()
+		return c.updateConfig(filename)
 	default:
 		articleID := c.configArticleID()
 
@@ -84,14 +91,9 @@ func (c *Client) SubmitArticle() error {
 			),
 		}
 
-		_, resp, err := c.api.UpdateArticle(c.contextWithAPIKey(), articleID, article)
-		if err != nil {
-			return errors.Wrapf(err, "article: update article %d in dev.to", articleID)
-		}
+		_, _, err := c.api.UpdateArticle(c.contextWithAPIKey(), articleID, article)
 
-		defer resp.Body.Close()
-
-		return nil
+		return errors.Wrapf(err, "article: update article %d in dev.to", articleID)
 	}
 }
 
@@ -113,8 +115,8 @@ func (c *Client) setConfigArticleID(id int32) {
 	c.viper.Set("article_id", id)
 }
 
-func (c *Client) updateConfig() error {
-	return errors.Wrap(c.viper.WriteConfigAs(configFrom(c.filename)), "article: update config")
+func (c *Client) updateConfig(filename string) error {
+	return errors.Wrap(c.viper.WriteConfigAs(configFrom(filename)), "article: update config")
 }
 
 func configFrom(filename string) string {
