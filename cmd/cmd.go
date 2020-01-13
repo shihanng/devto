@@ -1,12 +1,11 @@
 package cmd
 
 import (
-	"context"
+	"os"
 	"strings"
 
 	"github.com/cockroachdb/errors"
 	"github.com/shihanng/devto/pkg/article"
-	"github.com/shihanng/devto/pkg/devto"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -28,7 +27,7 @@ func New() (*cobra.Command, func()) {
 
 	listCmd := &cobra.Command{
 		Use:   "list",
-		Short: "List published articles on dev.to",
+		Short: "List published articles (maximum 30) on dev.to",
 		RunE:  r.listRunE,
 	}
 
@@ -99,22 +98,12 @@ func (r *runner) rootRunE(cmd *cobra.Command, args []string) error {
 }
 
 func (r *runner) listRunE(cmd *cobra.Command, args []string) error {
-	apiKey := context.WithValue(context.Background(), devto.ContextAPIKey, devto.APIKey{
-		Key: viper.GetString(flagAPIKey),
-	})
-
-	client := devto.NewAPIClient(devto.NewConfiguration())
-
-	articles, _, err := client.ArticlesApi.GetUserAllArticles(apiKey, nil)
+	client, err := article.NewClient(viper.GetString(flagAPIKey))
 	if err != nil {
-		return errors.Wrap(err, "cmd: get articles")
+		return err
 	}
 
-	for _, a := range articles {
-		r.log.Infow("", "title", a.Title, "ID", a.Id)
-	}
-
-	return nil
+	return client.ListArticle(os.Stdout)
 }
 
 func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {

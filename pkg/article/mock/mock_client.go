@@ -66,3 +66,19 @@ func (mr *MockapiClientMockRecorder) UpdateArticle(arg0, arg1, arg2 interface{})
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateArticle", reflect.TypeOf((*MockapiClient)(nil).UpdateArticle), arg0, arg1, arg2)
 }
+
+// GetUserAllArticles mocks base method
+func (m *MockapiClient) GetUserAllArticles(arg0 context.Context, arg1 *devto.ArticlesApiGetUserAllArticlesOpts) ([]devto.ArticleMe, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserAllArticles", arg0, arg1)
+	ret0, _ := ret[0].([]devto.ArticleMe)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetUserAllArticles indicates an expected call of GetUserAllArticles
+func (mr *MockapiClientMockRecorder) GetUserAllArticles(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserAllArticles", reflect.TypeOf((*MockapiClient)(nil).GetUserAllArticles), arg0, arg1)
+}

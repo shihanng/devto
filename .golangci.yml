@@ -28,3 +28,13 @@ issues:
       linters:
         - bodyclose
       text: "response body must be closed"
+
+    # Generated in github.com/shihanng/devto/pkg/devto
+    - path: pkg/article/client.go
+      linters:
+        - lll
+      text: "line is 121 characters"
+
+    - path: _test\.go
+      linters:
+        - gomnd

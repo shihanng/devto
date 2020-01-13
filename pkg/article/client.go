@@ -3,6 +3,8 @@ package article
 
 import (
 	"context"
+	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -16,6 +18,7 @@ import (
 type apiClient interface {
 	CreateArticle(context.Context, *devto.ArticlesApiCreateArticleOpts) (devto.ArticleShow, *http.Response, error)
 	UpdateArticle(context.Context, int32, *devto.ArticlesApiUpdateArticleOpts) (devto.ArticleShow, *http.Response, error)
+	GetUserAllArticles(context.Context, *devto.ArticlesApiGetUserAllArticlesOpts) ([]devto.ArticleMe, *http.Response, error)
 }
 
 type Client struct {
@@ -38,7 +41,7 @@ func NewClient(apiKey string, opts ...Option) (*Client, error) {
 	}
 
 	if err := c.viper.ReadInConfig(); err != nil {
-		if !os.IsNotExist(err) {
+		if !os.IsNotExist(err) && !errors.As(err, &viper.ConfigFileNotFoundError{}) {
 			return nil, errors.Wrap(err, "article: read config")
 		}
 	}
@@ -95,6 +98,19 @@ func (c *Client) SubmitArticle(filename string) error {
 
 		return errors.Wrapf(err, "article: update article %d in dev.to", articleID)
 	}
+}
+
+func (c *Client) ListArticle(w io.Writer) error {
+	articles, _, err := c.api.GetUserAllArticles(c.contextWithAPIKey(), nil)
+	if err != nil {
+		return errors.Wrap(err, "article: list articles in dev.to")
+	}
+
+	for _, a := range articles {
+		fmt.Fprintf(w, "[%d] %s\n", a.Id, a.Title)
+	}
+
+	return nil
 }
 
 func (c *Client) contextWithAPIKey() context.Context {

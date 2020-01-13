@@ -1,6 +1,7 @@
 package article
 
 import (
+	"bytes"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -56,4 +57,26 @@ func TestSubmitArticle(t *testing.T) {
 
 	assert.NoError(t, c.SubmitArticle(filename))
 	assert.NoError(t, c.SubmitArticle(filename))
+}
+
+func TestListArticle(t *testing.T) {
+	const apiKey = "abc1234"
+
+	c, err := NewClient(apiKey)
+	assert.NoError(t, err)
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockAPIClient := mock_article.NewMockapiClient(ctrl)
+	mockAPIClient.EXPECT().GetUserAllArticles(c.contextWithAPIKey(), nil).
+		Return([]devto.ArticleMe{{Title: "A title", Id: 1}}, nil, nil)
+
+	c.api = mockAPIClient
+
+	actual := bytes.Buffer{}
+	expected := "[1] A title\n"
+
+	assert.NoError(t, c.ListArticle(&actual))
+	assert.Equal(t, expected, actual.String())
 }
