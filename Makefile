@@ -1,7 +1,7 @@
 generator_version = v4.2.2
 api_doc = https://raw.githubusercontent.com/thepracticaldev/dev.to/7d0aeeefe5cf6250c5b58ae6b631bfe41fe5bf4a/docs/api_v0.yml
 
-.PHONY: gen
+.PHONY: test gen lint
 
 test:
 	go test -race -covermode atomic -coverprofile=profile.cov -v ./... -count=1
