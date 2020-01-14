@@ -3,6 +3,9 @@ api_doc = https://raw.githubusercontent.com/thepracticaldev/dev.to/7d0aeeefe5cf6
 
 .PHONY: gen
 
+test:
+	go test -race -covermode atomic -coverprofile=profile.cov -v ./... -count=1
+
 gen:
 	docker run --rm \
 		--user "$$(id -u):$$(id -g)" \
