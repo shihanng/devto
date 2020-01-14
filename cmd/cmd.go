@@ -38,6 +38,13 @@ func New() (*cobra.Command, func()) {
 		Args:  cobra.ExactArgs(1),
 	}
 
+	generateCmd := &cobra.Command{
+		Use:   "generate <Markdown file>",
+		Short: "Genenerate a devto.yml configuration file for the <Markdown file>",
+		RunE:  r.generateRunE,
+		Args:  cobra.ExactArgs(1),
+	}
+
 	rootCmd := &cobra.Command{
 		Use:               "devto",
 		Short:             "Publish to dev.to from your terminal",
@@ -49,6 +56,7 @@ func New() (*cobra.Command, func()) {
 	rootCmd.AddCommand(
 		listCmd,
 		submitCmd,
+		generateCmd,
 	)
 
 	_ = viper.BindPFlag(flagAPIKey, rootCmd.PersistentFlags().Lookup(flagAPIKey))
@@ -115,4 +123,8 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 	}
 
 	return client.SubmitArticle(filename)
+}
+
+func (r *runner) generateRunE(cmd *cobra.Command, args []string) error {
+	return nil
 }
