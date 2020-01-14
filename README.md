@@ -1,5 +1,7 @@
 # devto -- publish to [dev.to](https://dev.to) from your terminal
 
+[![](https://github.com/shihanng/devto/workflows/main/badge.svg?branch=develop)](https://github.com/shihanng/devto/actions?query=workflow%3Amain)
+[![Coverage Status](https://coveralls.io/repos/github/shihanng/devto/badge.svg?branch=develop)](https://coveralls.io/github/shihanng/devto?branch=develop)
 [![Go Report Card](https://goreportcard.com/badge/github.com/shihanng/devto)](https://goreportcard.com/report/github.com/shihanng/devto)
 
 ## Configuration
