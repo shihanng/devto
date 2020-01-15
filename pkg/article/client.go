@@ -113,6 +113,18 @@ func (c *Client) ListArticle(w io.Writer) error {
 	return nil
 }
 
+func (c *Client) GenerateImageLinks(filename string) error {
+	links, err := GetImageLinks(filename)
+	if err != nil {
+		return err
+	}
+
+	links = mergeLinks(c.configImageLinks(), links)
+	c.setConfigImageLinks(links)
+
+	return c.updateConfig(filename)
+}
+
 func (c *Client) contextWithAPIKey() context.Context {
 	return context.WithValue(context.Background(), devto.ContextAPIKey, devto.APIKey{
 		Key: c.apiKey,
@@ -121,6 +133,10 @@ func (c *Client) contextWithAPIKey() context.Context {
 
 func (c *Client) configImageLinks() map[string]string {
 	return c.viper.GetStringMapString("images")
+}
+
+func (c *Client) setConfigImageLinks(links map[string]string) {
+	c.viper.Set("images", links)
 }
 
 func (c *Client) configArticleID() int32 {
@@ -137,4 +153,14 @@ func (c *Client) updateConfig(filename string) error {
 
 func configFrom(filename string) string {
 	return filepath.Join(filepath.Dir(filename), "devto.yml")
+}
+
+func mergeLinks(old, latest map[string]string) map[string]string {
+	for k := range latest {
+		if v, ok := old[k]; ok {
+			latest[k] = v
+		}
+	}
+
+	return latest
 }

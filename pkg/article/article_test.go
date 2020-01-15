@@ -24,3 +24,13 @@ tags: "tag-one, tag-two"
 	assert.NoError(t, err)
 	assert.Equal(t, expected, actual)
 }
+
+func TestGetImageLinks(t *testing.T) {
+	expected := map[string]string{
+		"./image.png": "",
+	}
+
+	actual, err := GetImageLinks("./testdata/testdata.md")
+	assert.NoError(t, err)
+	assert.Equal(t, expected, actual)
+}

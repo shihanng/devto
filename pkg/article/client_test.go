@@ -80,3 +80,38 @@ func TestListArticle(t *testing.T) {
 	assert.NoError(t, c.ListArticle(&actual))
 	assert.Equal(t, expected, actual.String())
 }
+
+func TestGenerateImageLinks(t *testing.T) {
+	const apiKey = "abc1234"
+
+	dir, err := ioutil.TempDir("", "devto_test")
+	require.NoError(t, err)
+
+	defer os.RemoveAll(dir)
+
+	filename := filepath.Join(dir, "test.md")
+	require.NoError(t, ioutil.WriteFile(filename, []byte(`---
+---
+![image-1](./image-1.png)
+![image-2](./image-2.png)
+`), 0644))
+
+	devtoFilename := filepath.Join(dir, "devto.yml")
+	require.NoError(t, ioutil.WriteFile(devtoFilename, []byte(`images:
+  ./image-1.png: image.png
+`), 0644))
+
+	c, err := NewClient(apiKey, SetConfig(filename))
+	assert.NoError(t, err)
+
+	assert.NoError(t, c.GenerateImageLinks(filename))
+
+	actual, err := ioutil.ReadFile(devtoFilename)
+	assert.NoError(t, err)
+
+	expected := `images:
+  ./image-1.png: image.png
+  ./image-2.png: ""
+`
+	assert.Equal(t, []byte(expected), actual)
+}

@@ -54,7 +54,7 @@ func Render(body []byte, images map[string]string) ([]byte, error) {
 		}
 		return ast.WalkContinue, nil
 	}); err != nil {
-		return nil, errors.Wrap(err, "article: walk ast")
+		return nil, errors.Wrap(err, "article: walk ast for Render")
 	}
 
 	if err := r.Render(&buf, body, n); err != nil {
@@ -62,4 +62,40 @@ func Render(body []byte, images map[string]string) ([]byte, error) {
 	}
 
 	return buf.Bytes(), nil
+}
+
+func GetImageLinks(filename string) (map[string]string, error) {
+	parsed, err := Parse(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	reader := text.NewReader(parsed.markdownSource)
+
+	p := parser.NewParser(
+		parser.WithBlockParsers(
+			[]util.PrioritizedValue{
+				util.Prioritized(md.NewRawParagraphParser(), 100),
+			}...),
+		parser.WithInlineParsers(
+			[]util.PrioritizedValue{
+				util.Prioritized(parser.NewLinkParser(), 100),
+			}...),
+	)
+
+	n := p.Parse(reader)
+
+	images := make(map[string]string)
+
+	if err := ast.Walk(n, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
+		if entering && node.Kind() == ast.KindImage {
+			n := node.(*ast.Image)
+			images[string(n.Destination)] = ""
+		}
+		return ast.WalkContinue, nil
+	}); err != nil {
+		return nil, errors.Wrap(err, "article: walk ast for GetImageLinks")
+	}
+
+	return images, nil
 }

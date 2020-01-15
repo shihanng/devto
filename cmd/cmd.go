@@ -126,5 +126,12 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 }
 
 func (r *runner) generateRunE(cmd *cobra.Command, args []string) error {
-	return nil
+	filename := args[0]
+
+	client, err := article.NewClient(viper.GetString(flagAPIKey), article.SetConfig(filename))
+	if err != nil {
+		return err
+	}
+
+	return client.GenerateImageLinks(filename)
 }
