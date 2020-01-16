@@ -43,3 +43,9 @@ tags: "tag-one, tag-two"
 	assert.NoError(t, err)
 	assert.Equal(t, expectedContent, actualContent)
 }
+
+func TestParse_NotFound(t *testing.T) {
+	actual, err := Parse("./testdata/unknown.md")
+	assert.Error(t, err)
+	assert.Nil(t, actual)
+}
