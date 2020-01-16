@@ -11,6 +11,7 @@ func TestSetImageLinks(t *testing.T) {
 		filename string
 		images   map[string]string
 	}
+
 	tests := []struct {
 		name      string
 		args      args
@@ -43,6 +44,7 @@ tags: "tag-one, tag-two"
 			assertion: assert.Error,
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := SetImageLinks(tt.args.filename, tt.args.images)
@@ -56,6 +58,7 @@ func TestGetImageLinks(t *testing.T) {
 	type args struct {
 		filename string
 	}
+
 	tests := []struct {
 		name      string
 		args      args
@@ -77,6 +80,7 @@ func TestGetImageLinks(t *testing.T) {
 			assertion: assert.Error,
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := GetImageLinks(tt.args.filename)
