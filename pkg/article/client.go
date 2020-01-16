@@ -58,7 +58,7 @@ func SetConfig(filename string) Option {
 }
 
 func (c *Client) SubmitArticle(filename string) error {
-	body, err := Read(filename, c.configImageLinks())
+	body, err := SetImageLinks(filename, c.configImageLinks())
 	if err != nil {
 		return err
 	}

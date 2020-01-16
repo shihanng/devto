@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRead(t *testing.T) {
+func TestSetImageLinks(t *testing.T) {
 	images := map[string]string{
 		"./image.png": "./a/image.png",
 	}
@@ -20,7 +20,7 @@ tags: "tag-one, tag-two"
 ![image](./a/image.png)
 `
 
-	actual, err := Read("./testdata/testdata.md", images)
+	actual, err := SetImageLinks("./testdata/testdata.md", images)
 	assert.NoError(t, err)
 	assert.Equal(t, expected, actual)
 }

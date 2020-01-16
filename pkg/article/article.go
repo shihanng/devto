@@ -12,37 +12,12 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-func Read(filename string, images map[string]string) (string, error) {
-	parsed, err := Parse(filename)
+func SetImageLinks(filename string, images map[string]string) (string, error) {
+	parsed, n, err := read(filename)
 	if err != nil {
 		return "", err
 	}
 
-	parsed.markdownSource, err = Render(parsed.markdownSource, images)
-	if err != nil {
-		return "", err
-	}
-
-	return parsed.Content()
-}
-
-func Render(body []byte, images map[string]string) ([]byte, error) {
-	var buf bytes.Buffer
-
-	reader := text.NewReader(body)
-
-	p := parser.NewParser(
-		parser.WithBlockParsers(
-			[]util.PrioritizedValue{
-				util.Prioritized(md.NewRawParagraphParser(), 100),
-			}...),
-		parser.WithInlineParsers(
-			[]util.PrioritizedValue{
-				util.Prioritized(parser.NewLinkParser(), 100),
-			}...),
-	)
-
-	n := p.Parse(reader)
 	r := renderer.NewRenderer(renderer.WithNodeRenderers(util.Prioritized(&md.Renderer{}, 100)))
 
 	if err := ast.Walk(n, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
@@ -54,36 +29,25 @@ func Render(body []byte, images map[string]string) ([]byte, error) {
 		}
 		return ast.WalkContinue, nil
 	}); err != nil {
-		return nil, errors.Wrap(err, "article: walk ast for Render")
+		return "", errors.Wrap(err, "article: walk ast for Read")
 	}
 
-	if err := r.Render(&buf, body, n); err != nil {
-		return nil, errors.Wrap(err, "article: render markdown")
+	var buf bytes.Buffer
+
+	if err := r.Render(&buf, parsed.markdownSource, n); err != nil {
+		return "", errors.Wrap(err, "article: render markdown")
 	}
 
-	return buf.Bytes(), nil
+	parsed.markdownSource = buf.Bytes()
+
+	return parsed.Content()
 }
 
 func GetImageLinks(filename string) (map[string]string, error) {
-	parsed, err := Parse(filename)
+	_, n, err := read(filename)
 	if err != nil {
 		return nil, err
 	}
-
-	reader := text.NewReader(parsed.markdownSource)
-
-	p := parser.NewParser(
-		parser.WithBlockParsers(
-			[]util.PrioritizedValue{
-				util.Prioritized(md.NewRawParagraphParser(), 100),
-			}...),
-		parser.WithInlineParsers(
-			[]util.PrioritizedValue{
-				util.Prioritized(parser.NewLinkParser(), 100),
-			}...),
-	)
-
-	n := p.Parse(reader)
 
 	images := make(map[string]string)
 
@@ -98,4 +62,26 @@ func GetImageLinks(filename string) (map[string]string, error) {
 	}
 
 	return images, nil
+}
+
+func read(filename string) (*Parsed, ast.Node, error) {
+	parsed, err := Parse(filename)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	p := parser.NewParser(
+		parser.WithBlockParsers(
+			[]util.PrioritizedValue{
+				util.Prioritized(md.NewRawParagraphParser(), 100),
+			}...),
+		parser.WithInlineParsers(
+			[]util.PrioritizedValue{
+				util.Prioritized(parser.NewLinkParser(), 100),
+			}...),
+	)
+
+	reader := text.NewReader(parsed.markdownSource)
+
+	return parsed, p.Parse(reader), nil
 }
