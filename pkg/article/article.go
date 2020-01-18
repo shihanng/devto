@@ -23,7 +23,7 @@ func SetImageLinks(filename string, images map[string]string) (string, error) {
 	if err := ast.Walk(n, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
 		if entering && node.Kind() == ast.KindImage {
 			n := node.(*ast.Image)
-			if replace, ok := images[string(n.Destination)]; ok {
+			if replace, ok := images[string(n.Destination)]; ok && replace != "" {
 				n.Destination = []byte(replace)
 			}
 		}

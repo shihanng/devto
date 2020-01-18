@@ -25,6 +25,7 @@ tags: "tag-one, tag-two"
 		markdownSource: []byte(`
 ![image](./image.png)
 [Google](www.google.com)
+![image](./image-2.png)
 `),
 	}
 
@@ -40,6 +41,7 @@ tags: "tag-one, tag-two"
 
 ![image](./image.png)
 [Google](www.google.com)
+![image](./image-2.png)
 `
 	actualContent, err := actual.Content()
 	assert.NoError(t, err)

@@ -22,7 +22,10 @@ func TestSetImageLinks(t *testing.T) {
 			name: "normal",
 			args: args{
 				filename: "./testdata/testdata.md",
-				images:   map[string]string{"./image.png": "./a/image.png"},
+				images: map[string]string{
+					"./image.png":   "./a/image.png",
+					"./image-2.png": "",
+				},
 			},
 			want: `---
 title: "A title"
@@ -32,6 +35,7 @@ tags: "tag-one, tag-two"
 ---
 ![image](./a/image.png)
 [Google](www.google.com)
+![image](./image-2.png)
 `,
 			assertion: assert.NoError,
 		},
@@ -70,7 +74,8 @@ func TestGetImageLinks(t *testing.T) {
 			name: "normal",
 			args: args{filename: "./testdata/testdata.md"},
 			want: map[string]string{
-				"./image.png": "",
+				"./image.png":   "",
+				"./image-2.png": "",
 			},
 			assertion: assert.NoError,
 		},

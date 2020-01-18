@@ -7,3 +7,4 @@ tags: "tag-one, tag-two"
 
 ![image](./image.png)
 [Google](www.google.com)
+![image](./image-2.png)
