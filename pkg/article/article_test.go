@@ -31,6 +31,7 @@ description: "A description"
 tags: "tag-one, tag-two"
 ---
 ![image](./a/image.png)
+[Google](www.google.com)
 `,
 			assertion: assert.NoError,
 		},

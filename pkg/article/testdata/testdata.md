@@ -6,3 +6,4 @@ tags: "tag-one, tag-two"
 ---
 
 ![image](./image.png)
+[Google](www.google.com)

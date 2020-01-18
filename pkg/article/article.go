@@ -18,7 +18,7 @@ func SetImageLinks(filename string, images map[string]string) (string, error) {
 		return "", err
 	}
 
-	r := renderer.NewRenderer(renderer.WithNodeRenderers(util.Prioritized(&md.Renderer{}, 100)))
+	r := renderer.NewRenderer(renderer.WithNodeRenderers(util.Prioritized(&mdRender{}, 100)))
 
 	if err := ast.Walk(n, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
 		if entering && node.Kind() == ast.KindImage {
@@ -84,4 +84,15 @@ func read(filename string) (*Parsed, ast.Node, error) {
 	reader := text.NewReader(parsed.markdownSource)
 
 	return parsed, p.Parse(reader), nil
+}
+
+type mdRender struct{}
+
+// RegisterFuncs implements github.com/yuin/goldmark/renderer NodeRenderer.RegisterFuncs.
+func (r *mdRender) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
+	reg.Register(ast.KindParagraph, md.RawRenderParagraph)
+
+	reg.Register(ast.KindImage, md.RenderImage)
+	reg.Register(ast.KindLink, md.RenderLink)
+	reg.Register(ast.KindText, md.RawRenderText)
 }

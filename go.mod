@@ -12,11 +12,11 @@ require (
 	github.com/gohugoio/hugo v0.62.2
 	github.com/golang/mock v1.3.1
 	github.com/mitchellh/mapstructure v1.1.2
-	github.com/shihanng/md v0.0.0-20200106122920-63d8ee159497
+	github.com/shihanng/md v0.0.0-20200117114204-0507bf4476c0
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.4.0
-	github.com/yuin/goldmark v1.1.20
+	github.com/yuin/goldmark v1.1.21
 	go.uber.org/zap v1.13.0
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
 	golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // indirect
