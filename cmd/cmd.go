@@ -39,8 +39,26 @@ func New() (*cobra.Command, func()) {
 	submitCmd := &cobra.Command{
 		Use:   "submit <Markdown file>",
 		Short: "Submit article to dev.to",
-		RunE:  r.submitRunE,
-		Args:  cobra.ExactArgs(1),
+		Long: `Submit an aricle to dev.to.
+
+If not exist, devto.yml config will be created on the same directory with the <Markdown file>.
+devto.yml has the follwing format:
+
+  article_id: 1234
+  images:
+    "./image-1.png": "./new-image-1.png"
+    "./image-2.png": ""
+
+If article_id (in devto.yml) is 0, new post will be created on dev.to and
+the resulting article id will be stored as article_id.
+All image links in the <Markdown file> will be replaced according to the key-value pairs
+in images. If the value of a key is an empty string, it will not be replaced, e.g.
+
+  ![](./image-1.png) --> ![](./new-image-1.png)
+  ![](./image-2.png) --> ![](./image-2.png)
+`,
+		RunE: r.submitRunE,
+		Args: cobra.ExactArgs(1),
 	}
 
 	generateCmd := &cobra.Command{
