@@ -28,7 +28,12 @@ func New() (*cobra.Command, func()) {
 	listCmd := &cobra.Command{
 		Use:   "list",
 		Short: "List published articles (maximum 30) on dev.to",
-		RunE:  r.listRunE,
+		Long: `List published articles (maximum 30) on dev.to in the following format:
+
+   [<article_id>] <title>
+`,
+		RunE: r.listRunE,
+		Args: cobra.ExactArgs(0),
 	}
 
 	submitCmd := &cobra.Command{
