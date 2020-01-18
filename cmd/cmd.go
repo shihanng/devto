@@ -52,7 +52,7 @@ func New() (*cobra.Command, func()) {
 
 	rootCmd := &cobra.Command{
 		Use:               "devto",
-		Short:             "Publish to dev.to from your terminal",
+		Short:             "A tool to help you publish to dev.to from your terminal",
 		PersistentPreRunE: r.rootRunE,
 	}
 
