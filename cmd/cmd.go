@@ -61,7 +61,11 @@ func New() (*cobra.Command, func()) {
 
 	_ = viper.BindPFlag(flagAPIKey, rootCmd.PersistentFlags().Lookup(flagAPIKey))
 
-	return rootCmd, func() { _ = r.log.Sync() }
+	return rootCmd, func() {
+		if r.log != nil {
+			_ = r.log.Sync()
+		}
+	}
 }
 
 type runner struct {
