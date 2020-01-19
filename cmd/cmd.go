@@ -2,10 +2,12 @@ package cmd
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/cockroachdb/errors"
 	"github.com/shihanng/devto/pkg/article"
+	"github.com/shihanng/devto/pkg/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -144,7 +146,12 @@ func (r *runner) listRunE(cmd *cobra.Command, args []string) error {
 func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 	filename := args[0]
 
-	client, err := article.NewClient(viper.GetString(flagAPIKey), article.SetConfig(filename))
+	cfg, err := config.New(configFrom(filename))
+	if err != nil {
+		return err
+	}
+
+	client, err := article.NewClient(viper.GetString(flagAPIKey), article.SetConfig(cfg))
 	if err != nil {
 		return err
 	}
@@ -155,10 +162,19 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 func (r *runner) generateRunE(cmd *cobra.Command, args []string) error {
 	filename := args[0]
 
-	client, err := article.NewClient(viper.GetString(flagAPIKey), article.SetConfig(filename))
+	cfg, err := config.New(configFrom(filename))
+	if err != nil {
+		return err
+	}
+
+	client, err := article.NewClient(viper.GetString(flagAPIKey), article.SetConfig(cfg))
 	if err != nil {
 		return err
 	}
 
 	return client.GenerateImageLinks(filename)
+}
+
+func configFrom(filename string) string {
+	return filepath.Join(filepath.Dir(filename), "devto.yml")
 }

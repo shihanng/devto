@@ -2,9 +2,6 @@ package article
 
 import (
 	"bytes"
-	"io/ioutil"
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/antihax/optional"
@@ -12,56 +9,72 @@ import (
 	mock_article "github.com/shihanng/devto/pkg/article/mock"
 	"github.com/shihanng/devto/pkg/devto"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
-func TestSubmitArticle(t *testing.T) {
-	const (
-		apiKey    string = "abc1234"
-		articleID int32  = 123
-	)
+const (
+	apiKey             = "abc1234"
+	articleID    int32 = 123
+	emptyArticle       = "---\n---\n"
+)
 
-	dir, err := ioutil.TempDir("", "devto_test")
-	require.NoError(t, err)
-
-	defer os.RemoveAll(dir)
-
-	filename := filepath.Join(dir, "test.md")
-	require.NoError(t, ioutil.WriteFile(filename, []byte("---\n---\ntest"), 0644))
-
-	c, err := NewClient(apiKey, SetConfig(filename))
-	assert.NoError(t, err)
-
+func TestSubmitArticle_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockAPIClient := mock_article.NewMockapiClient(ctrl)
-	mockAPIClient.EXPECT().CreateArticle(c.contextWithAPIKey(), &devto.ArticlesApiCreateArticleOpts{
-		ArticleCreate: optional.NewInterface(devto.ArticleCreate{
-			Article: devto.ArticleCreateArticle{
-				BodyMarkdown: "---\n---\ntest",
-			},
-		},
-		),
-	}).Return(devto.ArticleShow{Id: articleID}, nil, nil)
-	mockAPIClient.EXPECT().UpdateArticle(c.contextWithAPIKey(), articleID, &devto.ArticlesApiUpdateArticleOpts{
-		ArticleUpdate: optional.NewInterface(devto.ArticleUpdate{
-			Article: devto.ArticleUpdateArticle{
-				BodyMarkdown: "---\n---\ntest",
-			},
-		},
-		),
-	}).Return(devto.ArticleShow{Id: articleID}, nil, nil)
+	mockConfig := mock_article.NewMockconfiger(ctrl)
+
+	c, err := NewClient(apiKey, SetConfig(mockConfig))
+	assert.NoError(t, err)
 
 	c.api = mockAPIClient
 
-	assert.NoError(t, c.SubmitArticle(filename))
-	assert.NoError(t, c.SubmitArticle(filename))
+	{
+		mockConfig.EXPECT().ImageLinks().Return(nil)
+		mockConfig.EXPECT().ArticleID().Return(int32(0))
+		mockAPIClient.EXPECT().CreateArticle(c.contextWithAPIKey(), &devto.ArticlesApiCreateArticleOpts{
+			ArticleCreate: optional.NewInterface(devto.ArticleCreate{
+				Article: devto.ArticleCreateArticle{
+					BodyMarkdown: emptyArticle,
+				},
+			},
+			),
+		}).Return(devto.ArticleShow{Id: articleID}, nil, nil)
+		mockConfig.EXPECT().SetArticleID(articleID)
+		mockConfig.EXPECT().Save().Return(nil)
+
+		assert.NoError(t, c.SubmitArticle("./testdata/empty.md"))
+	}
+}
+
+func TestSubmitArticle_Update(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockAPIClient := mock_article.NewMockapiClient(ctrl)
+	mockConfig := mock_article.NewMockconfiger(ctrl)
+
+	c, err := NewClient(apiKey, SetConfig(mockConfig))
+	assert.NoError(t, err)
+
+	c.api = mockAPIClient
+
+	mockConfig.EXPECT().ImageLinks().Return(nil)
+	mockConfig.EXPECT().ArticleID().Return(articleID)
+	mockConfig.EXPECT().ArticleID().Return(articleID)
+	mockAPIClient.EXPECT().UpdateArticle(c.contextWithAPIKey(), articleID, &devto.ArticlesApiUpdateArticleOpts{
+		ArticleUpdate: optional.NewInterface(devto.ArticleUpdate{
+			Article: devto.ArticleUpdateArticle{
+				BodyMarkdown: emptyArticle,
+			},
+		},
+		),
+	}).Return(devto.ArticleShow{Id: articleID}, nil, nil)
+
+	assert.NoError(t, c.SubmitArticle("./testdata/empty.md"))
 }
 
 func TestListArticle(t *testing.T) {
-	const apiKey = "abc1234"
-
 	c, err := NewClient(apiKey)
 	assert.NoError(t, err)
 
@@ -82,36 +95,22 @@ func TestListArticle(t *testing.T) {
 }
 
 func TestGenerateImageLinks(t *testing.T) {
-	const apiKey = "abc1234"
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	dir, err := ioutil.TempDir("", "devto_test")
-	require.NoError(t, err)
+	mockConfig := mock_article.NewMockconfiger(ctrl)
 
-	defer os.RemoveAll(dir)
-
-	filename := filepath.Join(dir, "test.md")
-	require.NoError(t, ioutil.WriteFile(filename, []byte(`---
----
-![image-1](./image-1.png)
-![image-2](./image-2.png)
-`), 0644))
-
-	devtoFilename := filepath.Join(dir, "devto.yml")
-	require.NoError(t, ioutil.WriteFile(devtoFilename, []byte(`images:
-  ./image-1.png: image.png
-`), 0644))
-
-	c, err := NewClient(apiKey, SetConfig(filename))
+	c, err := NewClient(apiKey, SetConfig(mockConfig))
 	assert.NoError(t, err)
 
-	assert.NoError(t, c.GenerateImageLinks(filename))
+	mockConfig.EXPECT().ImageLinks().Return(map[string]string{
+		"./image.png": "image-1.png",
+	})
+	mockConfig.EXPECT().SetImageLinks(map[string]string{
+		"./image.png":   "image-1.png",
+		"./image-2.png": "",
+	})
+	mockConfig.EXPECT().Save().Return(nil)
 
-	actual, err := ioutil.ReadFile(devtoFilename)
-	assert.NoError(t, err)
-
-	expected := `images:
-  ./image-1.png: image.png
-  ./image-2.png: ""
-`
-	assert.Equal(t, []byte(expected), actual)
+	assert.NoError(t, c.GenerateImageLinks("./testdata/testdata.md"))
 }

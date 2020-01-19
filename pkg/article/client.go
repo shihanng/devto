@@ -6,13 +6,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
-	"path/filepath"
 
 	"github.com/antihax/optional"
 	"github.com/cockroachdb/errors"
 	"github.com/shihanng/devto/pkg/devto"
-	"github.com/spf13/viper"
 )
 
 type apiClient interface {
@@ -21,29 +18,28 @@ type apiClient interface {
 	GetUserAllArticles(context.Context, *devto.ArticlesApiGetUserAllArticlesOpts) ([]devto.ArticleMe, *http.Response, error)
 }
 
+type configer interface {
+	Save() error
+	ImageLinks() map[string]string
+	SetImageLinks(map[string]string)
+	ArticleID() int32
+	SetArticleID(int32)
+}
+
 type Client struct {
 	api    apiClient
 	apiKey string
-	viper  *viper.Viper
+	config configer
 }
 
 func NewClient(apiKey string, opts ...Option) (*Client, error) {
 	c := Client{
 		api:    devto.NewAPIClient(devto.NewConfiguration()).ArticlesApi,
 		apiKey: apiKey,
-		viper:  viper.New(),
 	}
-
-	c.viper = viper.New()
 
 	for _, opt := range opts {
 		opt(&c)
-	}
-
-	if err := c.viper.ReadInConfig(); err != nil {
-		if !os.IsNotExist(err) && !errors.As(err, &viper.ConfigFileNotFoundError{}) {
-			return nil, errors.Wrap(err, "article: read config")
-		}
 	}
 
 	return &c, nil
@@ -51,19 +47,19 @@ func NewClient(apiKey string, opts ...Option) (*Client, error) {
 
 type Option func(*Client)
 
-func SetConfig(filename string) Option {
+func SetConfig(cfg configer) Option {
 	return func(c *Client) {
-		c.viper.SetConfigFile(configFrom(filename))
+		c.config = cfg
 	}
 }
 
 func (c *Client) SubmitArticle(filename string) error {
-	body, err := SetImageLinks(filename, c.configImageLinks())
+	body, err := SetImageLinks(filename, c.config.ImageLinks())
 	if err != nil {
 		return err
 	}
 
-	switch c.configArticleID() {
+	switch c.config.ArticleID() {
 	case 0:
 		article := &devto.ArticlesApiCreateArticleOpts{
 			ArticleCreate: optional.NewInterface(devto.ArticleCreate{
@@ -79,11 +75,11 @@ func (c *Client) SubmitArticle(filename string) error {
 			return errors.Wrap(err, "article: create article in dev.to")
 		}
 
-		c.setConfigArticleID(submitted.Id)
+		c.config.SetArticleID(submitted.Id)
 
-		return c.updateConfig(filename)
+		return c.config.Save()
 	default:
-		articleID := c.configArticleID()
+		articleID := c.config.ArticleID()
 
 		article := &devto.ArticlesApiUpdateArticleOpts{
 			ArticleUpdate: optional.NewInterface(devto.ArticleUpdate{
@@ -119,40 +115,16 @@ func (c *Client) GenerateImageLinks(filename string) error {
 		return err
 	}
 
-	links = mergeLinks(c.configImageLinks(), links)
-	c.setConfigImageLinks(links)
+	links = mergeLinks(c.config.ImageLinks(), links)
+	c.config.SetImageLinks(links)
 
-	return c.updateConfig(filename)
+	return c.config.Save()
 }
 
 func (c *Client) contextWithAPIKey() context.Context {
 	return context.WithValue(context.Background(), devto.ContextAPIKey, devto.APIKey{
 		Key: c.apiKey,
 	})
-}
-
-func (c *Client) configImageLinks() map[string]string {
-	return c.viper.GetStringMapString("images")
-}
-
-func (c *Client) setConfigImageLinks(links map[string]string) {
-	c.viper.Set("images", links)
-}
-
-func (c *Client) configArticleID() int32 {
-	return c.viper.GetInt32("article_id")
-}
-
-func (c *Client) setConfigArticleID(id int32) {
-	c.viper.Set("article_id", id)
-}
-
-func (c *Client) updateConfig(filename string) error {
-	return errors.Wrap(c.viper.WriteConfigAs(configFrom(filename)), "article: update config")
-}
-
-func configFrom(filename string) string {
-	return filepath.Join(filepath.Dir(filename), "devto.yml")
 }
 
 func mergeLinks(old, latest map[string]string) map[string]string {

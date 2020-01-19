@@ -82,3 +82,92 @@ func (mr *MockapiClientMockRecorder) GetUserAllArticles(arg0, arg1 interface{}) 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserAllArticles", reflect.TypeOf((*MockapiClient)(nil).GetUserAllArticles), arg0, arg1)
 }
+
+// Mockconfiger is a mock of configer interface
+type Mockconfiger struct {
+	ctrl     *gomock.Controller
+	recorder *MockconfigerMockRecorder
+}
+
+// MockconfigerMockRecorder is the mock recorder for Mockconfiger
+type MockconfigerMockRecorder struct {
+	mock *Mockconfiger
+}
+
+// NewMockconfiger creates a new mock instance
+func NewMockconfiger(ctrl *gomock.Controller) *Mockconfiger {
+	mock := &Mockconfiger{ctrl: ctrl}
+	mock.recorder = &MockconfigerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *Mockconfiger) EXPECT() *MockconfigerMockRecorder {
+	return m.recorder
+}
+
+// Save mocks base method
+func (m *Mockconfiger) Save() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Save")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Save indicates an expected call of Save
+func (mr *MockconfigerMockRecorder) Save() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*Mockconfiger)(nil).Save))
+}
+
+// ImageLinks mocks base method
+func (m *Mockconfiger) ImageLinks() map[string]string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ImageLinks")
+	ret0, _ := ret[0].(map[string]string)
+	return ret0
+}
+
+// ImageLinks indicates an expected call of ImageLinks
+func (mr *MockconfigerMockRecorder) ImageLinks() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImageLinks", reflect.TypeOf((*Mockconfiger)(nil).ImageLinks))
+}
+
+// SetImageLinks mocks base method
+func (m *Mockconfiger) SetImageLinks(arg0 map[string]string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetImageLinks", arg0)
+}
+
+// SetImageLinks indicates an expected call of SetImageLinks
+func (mr *MockconfigerMockRecorder) SetImageLinks(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetImageLinks", reflect.TypeOf((*Mockconfiger)(nil).SetImageLinks), arg0)
+}
+
+// ArticleID mocks base method
+func (m *Mockconfiger) ArticleID() int32 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ArticleID")
+	ret0, _ := ret[0].(int32)
+	return ret0
+}
+
+// ArticleID indicates an expected call of ArticleID
+func (mr *MockconfigerMockRecorder) ArticleID() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ArticleID", reflect.TypeOf((*Mockconfiger)(nil).ArticleID))
+}
+
+// SetArticleID mocks base method
+func (m *Mockconfiger) SetArticleID(arg0 int32) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetArticleID", arg0)
+}
+
+// SetArticleID indicates an expected call of SetArticleID
+func (mr *MockconfigerMockRecorder) SetArticleID(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetArticleID", reflect.TypeOf((*Mockconfiger)(nil).SetArticleID), arg0)
+}
