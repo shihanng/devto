@@ -11,14 +11,19 @@ require (
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/gohugoio/hugo v0.62.2
 	github.com/golang/mock v1.3.1
+	github.com/kr/pretty v0.2.0 // indirect
 	github.com/mitchellh/mapstructure v1.1.2
+	github.com/sergi/go-diff v1.1.0 // indirect
 	github.com/shihanng/md v0.0.0-20200117114204-0507bf4476c0
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.4.0
 	github.com/yuin/goldmark v1.1.21
 	go.uber.org/zap v1.13.0
+	golang.org/x/crypto v0.0.0-20200117160349-530e935923ad // indirect
+	golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa // indirect
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
-	golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // indirect
+	golang.org/x/sys v0.0.0-20200117145432-59e60aa80a0c // indirect
+	gopkg.in/src-d/go-git.v4 v4.13.1
 	gopkg.in/yaml.v2 v2.2.7 // indirect
 )
