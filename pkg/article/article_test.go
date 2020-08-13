@@ -3,6 +3,7 @@ package article
 import (
 	"testing"
 
+	"github.com/sebdah/goldie/v2"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -57,6 +58,14 @@ tags: "tag-one, tag-two"
 			assert.Equal(t, tt.want, got)
 		})
 	}
+}
+
+func TestSetImageLinks_golden(t *testing.T) {
+	content, err := SetImageLinks("./testdata/real_article.md", map[string]string{})
+	assert.NoError(t, err)
+
+	g := goldie.New(t)
+	g.Assert(t, "real_article", []byte(content))
 }
 
 func TestGetImageLinks(t *testing.T) {
