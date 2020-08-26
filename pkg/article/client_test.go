@@ -14,7 +14,7 @@ import (
 const (
 	apiKey             = "abc1234"
 	articleID    int32 = 123
-	emptyArticle       = "---\n---\n"
+	emptyArticle       = ""
 )
 
 func TestSubmitArticle_Create(t *testing.T) {

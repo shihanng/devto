@@ -29,10 +29,10 @@ func TestSetImageLinks(t *testing.T) {
 				},
 			},
 			want: `---
-title: "A title"
+title: A title
 published: false
-description: "A description"
-tags: "tag-one, tag-two"
+description: A description
+tags: tag-one, tag-two
 ---
 ![image](./a/image.png)
 [Google](www.google.com)

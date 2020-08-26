@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/cockroachdb/errors"
+	"github.com/gohugoio/hugo/parser"
 	"github.com/gohugoio/hugo/parser/metadecoders"
 	"github.com/gohugoio/hugo/parser/pageparser"
 	"github.com/mitchellh/mapstructure"
@@ -21,33 +22,17 @@ func Parse(filename string) (*Parsed, error) {
 
 	defer f.Close()
 
-	result, err := pageparser.Parse(f, pageparser.Config{})
+	cfm, err := pageparser.ParseFrontMatterAndContent(f)
 	if err != nil {
 		return nil, errors.Wrap(err, "article: parse file")
 	}
 
-	var parsed Parsed
-
-	walkFn := func(item pageparser.Item) bool {
-		if parsed.frontMatterSource != nil {
-			parsed.markdownSource = result.Input()[item.Pos:]
-			return false
-		} else if item.IsFrontMatter() {
-			parsed.frontMatterFormat = metadecoders.FormatFromFrontMatterType(item.Type)
-			parsed.frontMatterSource = item.Val
-		}
-
-		return true
+	parsed := Parsed{
+		content:           cfm.Content,
+		frontMatterFormat: cfm.FrontMatterFormat,
 	}
 
-	result.Iterator().PeekWalk(walkFn)
-
-	metadata, err := metadecoders.Default.UnmarshalToMap(parsed.frontMatterSource, parsed.frontMatterFormat)
-	if err != nil {
-		return nil, errors.Wrap(err, "article: unmarshal front matter")
-	}
-
-	if err := mapstructure.Decode(metadata, &parsed.frontMatter); err != nil {
+	if err := mapstructure.Decode(cfm.FrontMatter, &parsed.frontMatter); err != nil {
 		return nil, errors.Wrap(err, "article: decode front matter")
 	}
 
@@ -55,10 +40,9 @@ func Parse(filename string) (*Parsed, error) {
 }
 
 type Parsed struct {
+	content           []byte
 	frontMatterFormat metadecoders.Format
-	frontMatterSource []byte
 	frontMatter       FrontMatter
-	markdownSource    []byte
 }
 
 // Content merges the front mattter and markdown source and returns it as string.
@@ -67,10 +51,14 @@ func (p *Parsed) Content() (string, error) {
 		b: &bytes.Buffer{},
 	}
 
-	eb.WriteString("---\n")
-	eb.Write(p.frontMatterSource)
-	eb.WriteString("---\n")
-	eb.Write(p.markdownSource)
+	var buf bytes.Buffer
+
+	if err := parser.InterfaceToFrontMatter(p.frontMatter, p.frontMatterFormat, &buf); err != nil {
+		return "", errors.Wrap(eb.err, "article: marshal frontMatter to YAML")
+	}
+
+	eb.Write(buf.Bytes())
+	eb.Write(p.content)
 
 	if eb.err != nil {
 		return "", errors.Wrap(eb.err, "article: output parsed content")
@@ -81,13 +69,13 @@ func (p *Parsed) Content() (string, error) {
 
 // FrontMatter as described in https://dev.to/p/editor_guide
 type FrontMatter struct {
-	Title        string
-	Published    bool
-	Description  string
-	Tags         string
-	CanonicalURL string
-	CoverImage   string
-	Series       string
+	Title        string `yaml:"title,omitempty"`
+	Published    *bool  `yaml:"published,omitempty"`
+	Description  string `yaml:"description,omitempty"`
+	Tags         string `yaml:"tags,omitempty"`
+	CanonicalURL string `yaml:"canonical_url,omitempty" mapstructure:"canonical_url"`
+	CoverImage   string `yaml:"cover_image,omitempty" mapstructure:"canonical_url"`
+	Series       string `yaml:"series,omitempty"`
 }
 
 type errBuffer struct {

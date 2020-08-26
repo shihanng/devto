@@ -3,6 +3,7 @@ title: Memory Reservation in Amazon Elastic Container Service
 published: true
 tags: aws, docker, learning, beginners
 cover_image: cover.jpg
+canonical_url: test.jp
 ---
 
 We use [**task definition**](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html) to describe how we want a Docker container to be deployed in an ECS cluster. `memoryReservation` is one of the **container definitions** that need to be specified when writing the task definition, see [Task definition parameters by AWS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#container_definitions):

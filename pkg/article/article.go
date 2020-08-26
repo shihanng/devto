@@ -34,11 +34,11 @@ func SetImageLinks(filename string, images map[string]string) (string, error) {
 
 	var buf bytes.Buffer
 
-	if err := r.Render(&buf, parsed.markdownSource, n); err != nil {
+	if err := r.Render(&buf, parsed.content, n); err != nil {
 		return "", errors.Wrap(err, "article: render markdown")
 	}
 
-	parsed.markdownSource = buf.Bytes()
+	parsed.content = buf.Bytes()
 
 	return parsed.Content()
 }
@@ -81,7 +81,7 @@ func read(filename string) (*Parsed, ast.Node, error) {
 			}...),
 	)
 
-	reader := text.NewReader(parsed.markdownSource)
+	reader := text.NewReader(parsed.content)
 
 	return parsed, p.Parse(reader), nil
 }
