@@ -83,14 +83,6 @@ type errBuffer struct {
 	err error
 }
 
-func (eb *errBuffer) WriteString(s string) {
-	if eb.err != nil {
-		return
-	}
-
-	_, eb.err = eb.b.WriteString(s)
-}
-
 func (eb *errBuffer) Write(p []byte) {
 	if eb.err != nil {
 		return
