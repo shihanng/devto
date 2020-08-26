@@ -99,6 +99,10 @@ func TestGetters(t *testing.T) {
 		}
 		assert.Equal(t, expected, c.ImageLinks())
 	}
+
+	{
+		assert.Equal(t, "./test.jpg", c.CoverImage())
+	}
 }
 
 func TestSetters(t *testing.T) {
@@ -115,10 +119,12 @@ func TestSetters(t *testing.T) {
 		"key-1": "value-a",
 		"key-2": "value-b",
 	})
+	c.SetCoverImage("./test.jpg")
 
 	require.NoError(t, c.Save())
 
 	expected := []byte(`article_id: 1985
+cover_image: ./test.jpg
 images:
   key-1: value-a
   key-2: value-b

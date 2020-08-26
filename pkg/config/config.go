@@ -48,3 +48,11 @@ func (c *Config) ArticleID() int32 {
 func (c *Config) SetArticleID(id int32) {
 	c.viper.Set("article_id", id)
 }
+
+func (c *Config) CoverImage() string {
+	return c.viper.GetString("cover_image")
+}
+
+func (c *Config) SetCoverImage(path string) {
+	c.viper.Set("cover_image", path)
+}
