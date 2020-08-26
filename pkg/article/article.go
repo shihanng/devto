@@ -86,6 +86,21 @@ func read(filename string) (*Parsed, ast.Node, error) {
 	return parsed, p.Parse(reader), nil
 }
 
+func PrefixLinks(links map[string]string, prefix string, force bool) map[string]string {
+	results := make(map[string]string, len(links))
+
+	for k, v := range links {
+		if v != "" && !force {
+			results[k] = v
+			continue
+		}
+
+		results[k] = prefix + k
+	}
+
+	return results
+}
+
 type mdRender struct{}
 
 // RegisterFuncs implements github.com/yuin/goldmark/renderer NodeRenderer.RegisterFuncs.

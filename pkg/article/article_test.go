@@ -104,3 +104,53 @@ func TestGetImageLinks(t *testing.T) {
 		})
 	}
 }
+
+func TestPrefixLinks(t *testing.T) {
+	type args struct {
+		links  map[string]string
+		prefix string
+		force  bool
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want map[string]string
+	}{
+		{
+			name: "normal",
+			args: args{
+				links: map[string]string{
+					"./image/image.png":   "image.png",
+					"./image/picture.jpg": "",
+				},
+				prefix: "https://raw.githubusercontent.com/repo/user/",
+			},
+			want: map[string]string{
+				"./image/image.png":   "image.png",
+				"./image/picture.jpg": "https://raw.githubusercontent.com/repo/user/./image/picture.jpg",
+			},
+		},
+		{
+			name: "force",
+			args: args{
+				links: map[string]string{
+					"./image/image.png":   "image.png",
+					"./image/picture.jpg": "",
+				},
+				prefix: "https://raw.githubusercontent.com/repo/user/",
+				force:  true,
+			},
+			want: map[string]string{
+				"./image/image.png":   "https://raw.githubusercontent.com/repo/user/./image/image.png",
+				"./image/picture.jpg": "https://raw.githubusercontent.com/repo/user/./image/picture.jpg",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, PrefixLinks(tt.args.links, tt.args.prefix, tt.args.force))
+		})
+	}
+}
