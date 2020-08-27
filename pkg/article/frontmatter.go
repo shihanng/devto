@@ -74,7 +74,7 @@ type FrontMatter struct {
 	Description  string `yaml:"description,omitempty"`
 	Tags         string `yaml:"tags,omitempty"`
 	CanonicalURL string `yaml:"canonical_url,omitempty" mapstructure:"canonical_url"`
-	CoverImage   string `yaml:"cover_image,omitempty" mapstructure:"canonical_url"`
+	CoverImage   string `yaml:"cover_image,omitempty" mapstructure:"cover_image"`
 	Series       string `yaml:"series,omitempty"`
 }
 
