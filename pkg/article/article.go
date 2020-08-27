@@ -12,11 +12,13 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-func SetImageLinks(filename string, images map[string]string) (string, error) {
+func SetImageLinks(filename string, images map[string]string, setCoverImage func(string) string) (string, error) {
 	parsed, n, err := read(filename)
 	if err != nil {
 		return "", err
 	}
+
+	parsed.frontMatter.CoverImage = setCoverImage(parsed.frontMatter.CoverImage)
 
 	r := renderer.NewRenderer(renderer.WithNodeRenderers(util.Prioritized(&mdRender{}, 100)))
 
@@ -41,6 +43,16 @@ func SetImageLinks(filename string, images map[string]string) (string, error) {
 	parsed.content = buf.Bytes()
 
 	return parsed.Content()
+}
+
+func CoverImageUntouch(original string) string {
+	return original
+}
+
+func CoverImagePrefixed(prefix string) func(string) string {
+	return func(original string) string {
+		return prefix + original
+	}
 }
 
 func GetImageLinks(filename string) (map[string]string, error) {

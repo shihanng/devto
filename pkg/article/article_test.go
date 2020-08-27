@@ -9,8 +9,9 @@ import (
 
 func TestSetImageLinks(t *testing.T) {
 	type args struct {
-		filename string
-		images   map[string]string
+		filename      string
+		images        map[string]string
+		setCoverImage func(string) string
 	}
 
 	tests := []struct {
@@ -27,14 +28,36 @@ func TestSetImageLinks(t *testing.T) {
 					"./image.png":   "./a/image.png",
 					"./image-2.png": "",
 				},
+				setCoverImage: CoverImageUntouch,
 			},
 			want: `---
 title: A title
 published: false
 description: A description
 tags: tag-one, tag-two
+cover_image: ./cv.jpg
 ---
 ![image](./a/image.png)
+[Google](www.google.com)
+![image](./image-2.png)
+`,
+			assertion: assert.NoError,
+		},
+		{
+			name: "prefix cover_image",
+			args: args{
+				filename:      "./testdata/testdata.md",
+				images:        map[string]string{},
+				setCoverImage: CoverImagePrefixed("test/"),
+			},
+			want: `---
+title: A title
+published: false
+description: A description
+tags: tag-one, tag-two
+cover_image: test/./cv.jpg
+---
+![image](./image.png)
 [Google](www.google.com)
 ![image](./image-2.png)
 `,
@@ -53,7 +76,7 @@ tags: tag-one, tag-two
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := SetImageLinks(tt.args.filename, tt.args.images)
+			got, err := SetImageLinks(tt.args.filename, tt.args.images, tt.args.setCoverImage)
 			tt.assertion(t, err)
 			assert.Equal(t, tt.want, got)
 		})
@@ -61,7 +84,7 @@ tags: tag-one, tag-two
 }
 
 func TestSetImageLinks_golden(t *testing.T) {
-	content, err := SetImageLinks("./testdata/real_article.md", map[string]string{})
+	content, err := SetImageLinks("./testdata/real_article.md", map[string]string{}, CoverImageUntouch)
 	assert.NoError(t, err)
 
 	g := goldie.New(t)

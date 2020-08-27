@@ -54,7 +54,7 @@ func SetConfig(cfg configer) Option {
 }
 
 func (c *Client) SubmitArticle(filename string) error {
-	body, err := SetImageLinks(filename, c.config.ImageLinks())
+	body, err := SetImageLinks(filename, c.config.ImageLinks(), CoverImageUntouch)
 	if err != nil {
 		return err
 	}

@@ -22,6 +22,7 @@ func TestParse(t *testing.T) {
 			Published:   &nope,
 			Description: "A description",
 			Tags:        "tag-one, tag-two",
+			CoverImage:  "./cv.jpg",
 		},
 	}
 
@@ -33,6 +34,7 @@ title: A title
 published: false
 description: A description
 tags: tag-one, tag-two
+cover_image: ./cv.jpg
 ---
 
 ![image](./image.png)
