@@ -110,7 +110,7 @@ func (c *Client) ListArticle(w io.Writer) error {
 }
 
 func (c *Client) GenerateImageLinks(filename string) error {
-	links, err := GetImageLinks(filename)
+	links, _, err := GetImageLinks(filename)
 	if err != nil {
 		return err
 	}
