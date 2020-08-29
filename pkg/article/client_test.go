@@ -110,6 +110,7 @@ func TestGenerateImageLinks(t *testing.T) {
 		"./image.png":   "image-1.png",
 		"./image-2.png": "",
 	})
+	mockConfig.EXPECT().SetCoverImage("")
 	mockConfig.EXPECT().Save().Return(nil)
 
 	assert.NoError(t, c.GenerateImageLinks("./testdata/testdata.md"))

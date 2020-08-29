@@ -24,6 +24,8 @@ type configer interface {
 	SetImageLinks(map[string]string)
 	ArticleID() int32
 	SetArticleID(int32)
+	CoverImage() string
+	SetCoverImage(string)
 }
 
 type Client struct {
@@ -110,13 +112,17 @@ func (c *Client) ListArticle(w io.Writer) error {
 }
 
 func (c *Client) GenerateImageLinks(filename string) error {
-	links, _, err := GetImageLinks(filename)
+	links, coverImage, err := GetImageLinks(filename)
 	if err != nil {
 		return err
 	}
 
 	links = mergeLinks(c.config.ImageLinks(), links)
 	c.config.SetImageLinks(links)
+
+	if coverImage != "" {
+		c.config.SetCoverImage("")
+	}
 
 	return c.config.Save()
 }

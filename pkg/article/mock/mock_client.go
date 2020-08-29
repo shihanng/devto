@@ -171,3 +171,29 @@ func (mr *MockconfigerMockRecorder) SetArticleID(arg0 interface{}) *gomock.Call 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetArticleID", reflect.TypeOf((*Mockconfiger)(nil).SetArticleID), arg0)
 }
+
+// CoverImage mocks base method
+func (m *Mockconfiger) CoverImage() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CoverImage")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// CoverImage indicates an expected call of CoverImage
+func (mr *MockconfigerMockRecorder) CoverImage() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CoverImage", reflect.TypeOf((*Mockconfiger)(nil).CoverImage))
+}
+
+// SetCoverImage mocks base method
+func (m *Mockconfiger) SetCoverImage(arg0 string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetCoverImage", arg0)
+}
+
+// SetCoverImage indicates an expected call of SetCoverImage
+func (mr *MockconfigerMockRecorder) SetCoverImage(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetCoverImage", reflect.TypeOf((*Mockconfiger)(nil).SetCoverImage), arg0)
+}
