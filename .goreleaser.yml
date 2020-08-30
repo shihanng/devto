@@ -1,0 +1,66 @@
+env:
+  - GO111MODULE=on
+  - CGO_ENABLED=0
+
+builds:
+  - goos:
+      - darwin
+      - windows
+      - linux
+    goarch:
+      - amd64
+      - "386"
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+    ignore:
+      - goos: darwin
+        goarch: "386"
+
+archives:
+  - format: tar.gz
+    name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    files:
+      - LICENSE*
+      - README*
+
+brews:
+  - tap:
+      owner: shihanng
+      name: homebrew-devto
+    commit_author:
+      name: "Shi Han NG"
+      email: shihanng@gmail.com
+    description: "CLI tool to publish article to https://dev.to/"
+    homepage: "https://github.com/shihanng/devto"
+    install: |
+      bin.install Dir['devto']
+    test: |
+      system "#{bin}/devto"
+nfpms:
+  - homepage: https://github.com/shihanng/devto
+    maintainer: Shi Han NG <shihanng@gmail.com>
+    file_name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    description: "CLI tool to publish article to https://dev.to/"
+    bindir: /usr/local/bin
+    license: MIT
+    formats:
+      - deb
+      - rpm
+
+dockers:
+  - goos: linux
+    goarch: amd64
+    binaries:
+      - rad
+    image_templates:
+      - "shihanng/devto:latest"
+      - "shihanng/devto:{{ .Tag }}"
+
+checksum:
+  name_template: "{{ .ProjectName }}_checksums.txt"
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+changelog:
+  skip: true
