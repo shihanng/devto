@@ -118,10 +118,16 @@ func (c *Client) GenerateImageLinks(filename string) error {
 	}
 
 	links = mergeLinks(c.config.ImageLinks(), links)
+
 	c.config.SetImageLinks(links)
 
-	if coverImage != "" {
+	switch coverImage {
+	case "":
 		c.config.SetCoverImage("")
+	default:
+		if c.config.CoverImage() == "" {
+			c.config.SetCoverImage("")
+		}
 	}
 
 	return c.config.Save()

@@ -110,8 +110,26 @@ func TestGenerateImageLinks(t *testing.T) {
 		"./image.png":   "image-1.png",
 		"./image-2.png": "",
 	})
+	mockConfig.EXPECT().CoverImage().Return("")
 	mockConfig.EXPECT().SetCoverImage("")
 	mockConfig.EXPECT().Save().Return(nil)
 
 	assert.NoError(t, c.GenerateImageLinks("./testdata/testdata.md"))
+}
+
+func TestGenerateImageLinks_NoCoverImage(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockConfig := mock_article.NewMockconfiger(ctrl)
+
+	c, err := NewClient(apiKey, SetConfig(mockConfig))
+	assert.NoError(t, err)
+
+	mockConfig.EXPECT().ImageLinks().Return(nil)
+	mockConfig.EXPECT().SetImageLinks(map[string]string{})
+	mockConfig.EXPECT().SetCoverImage("")
+	mockConfig.EXPECT().Save().Return(nil)
+
+	assert.NoError(t, c.GenerateImageLinks("./testdata/empty.md"))
 }
