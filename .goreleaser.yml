@@ -27,6 +27,7 @@ brews:
   - tap:
       owner: shihanng
       name: homebrew-devto
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
     commit_author:
       name: "Shi Han NG"
       email: shihanng@gmail.com
