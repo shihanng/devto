@@ -51,7 +51,7 @@ dockers:
   - goos: linux
     goarch: amd64
     binaries:
-      - rad
+      - devto
     image_templates:
       - "shihanng/devto:latest"
       - "shihanng/devto:{{ .Tag }}"
