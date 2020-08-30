@@ -172,7 +172,7 @@ func (r *runner) generateRunE(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	return client.GenerateImageLinks(filename)
+	return client.GenerateImageLinks(filename, "", false)
 }
 
 func configFrom(filename string) string {

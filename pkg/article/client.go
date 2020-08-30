@@ -111,7 +111,7 @@ func (c *Client) ListArticle(w io.Writer) error {
 	return nil
 }
 
-func (c *Client) GenerateImageLinks(filename string) error {
+func (c *Client) GenerateImageLinks(filename, prefix string, override bool) error {
 	links, coverImage, err := GetImageLinks(filename)
 	if err != nil {
 		return err
@@ -119,16 +119,25 @@ func (c *Client) GenerateImageLinks(filename string) error {
 
 	links = mergeLinks(c.config.ImageLinks(), links)
 
-	c.config.SetImageLinks(links)
+	configCoverImage := c.config.CoverImage()
 
-	switch coverImage {
-	case "":
-		c.config.SetCoverImage("")
-	default:
-		if c.config.CoverImage() == "" {
-			c.config.SetCoverImage("")
+	if coverImage == "" || configCoverImage == "" {
+		c.config.SetCoverImage(coverImage)
+	}
+
+	if prefix != "" {
+		for key, link := range links {
+			if link == "" || override {
+				links[key] = prefix + key
+			}
+		}
+
+		if coverImage != "" && (configCoverImage == "" || override) {
+			c.config.SetCoverImage(prefix + coverImage)
 		}
 	}
+
+	c.config.SetImageLinks(links)
 
 	return c.config.Save()
 }

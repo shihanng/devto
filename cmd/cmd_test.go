@@ -40,7 +40,7 @@ func TestGenerate(t *testing.T) {
 	actual, err := ioutil.ReadFile(filepath.Join(dir, "devto.yml"))
 	require.NoError(t, err)
 
-	expected := []byte(`cover_image: ""
+	expected := []byte(`cover_image: ./cv.jpg
 images:
   ./image.png: ""
   https://github.com/shihanng/dev.to/blob/master/posts/look-postgresql/assets/docker_rails.png: ""
