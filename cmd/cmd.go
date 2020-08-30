@@ -16,6 +16,8 @@ import (
 const (
 	flagAPIKey = "api-key"
 	flagDebug  = "debug"
+	flagPrefix = "prefix"
+	flagForce  = "force"
 )
 
 func New() (*cobra.Command, func()) {
@@ -69,6 +71,9 @@ in images. If the value of a key is an empty string, it will not be replaced, e.
 		RunE:  r.generateRunE,
 		Args:  cobra.ExactArgs(1),
 	}
+	generateCmd.PersistentFlags().StringP(flagPrefix, "p", "", "Prefix (cover) image links with the given value")
+	generateCmd.PersistentFlags().BoolP(
+		flagForce, "f", false, "Use with -p to override existing values in the devto.yml file")
 
 	rootCmd := &cobra.Command{
 		Use:               "devto",
@@ -162,6 +167,16 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 func (r *runner) generateRunE(cmd *cobra.Command, args []string) error {
 	filename := args[0]
 
+	prefix, err := cmd.PersistentFlags().GetString(flagPrefix)
+	if err != nil {
+		return errors.Wrap(err, "cmd: fail to get prefix flag")
+	}
+
+	override, err := cmd.PersistentFlags().GetBool(flagForce)
+	if err != nil {
+		return errors.Wrap(err, "cmd: fail to get force flag")
+	}
+
 	cfg, err := config.New(configFrom(filename))
 	if err != nil {
 		return err
@@ -172,7 +187,7 @@ func (r *runner) generateRunE(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	return client.GenerateImageLinks(filename, "", false)
+	return client.GenerateImageLinks(filename, prefix, override)
 }
 
 func configFrom(filename string) string {
