@@ -11,7 +11,7 @@ func TestSetImageLinks(t *testing.T) {
 	type args struct {
 		filename      string
 		images        map[string]string
-		setCoverImage func(string) string
+		setCoverImage string
 	}
 
 	tests := []struct {
@@ -28,7 +28,7 @@ func TestSetImageLinks(t *testing.T) {
 					"./image.png":   "./a/image.png",
 					"./image-2.png": "",
 				},
-				setCoverImage: CoverImageUntouch,
+				setCoverImage: "",
 			},
 			want: `---
 title: A title
@@ -48,7 +48,7 @@ cover_image: ./cv.jpg
 			args: args{
 				filename:      "./testdata/testdata.md",
 				images:        map[string]string{},
-				setCoverImage: CoverImagePrefixed("test/"),
+				setCoverImage: "test/./cv.jpg",
 			},
 			want: `---
 title: A title
@@ -84,7 +84,7 @@ cover_image: test/./cv.jpg
 }
 
 func TestSetImageLinks_golden(t *testing.T) {
-	content, err := SetImageLinks("./testdata/real_article.md", map[string]string{}, CoverImageUntouch)
+	content, err := SetImageLinks("./testdata/real_article.md", map[string]string{}, "")
 	assert.NoError(t, err)
 
 	g := goldie.New(t)
