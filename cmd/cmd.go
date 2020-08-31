@@ -161,7 +161,7 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	return client.SubmitArticle(filename)
+	return client.SubmitArticle(filename, false)
 }
 
 func (r *runner) generateRunE(cmd *cobra.Command, args []string) error {

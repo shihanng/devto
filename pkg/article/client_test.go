@@ -37,6 +37,7 @@ func TestSubmitArticle_Create(t *testing.T) {
 			ArticleCreate: optional.NewInterface(devto.ArticleCreate{
 				Article: devto.ArticleCreateArticle{
 					BodyMarkdown: emptyArticle,
+					Published:    true,
 				},
 			},
 			),
@@ -44,7 +45,7 @@ func TestSubmitArticle_Create(t *testing.T) {
 		mockConfig.EXPECT().SetArticleID(articleID)
 		mockConfig.EXPECT().Save().Return(nil)
 
-		assert.NoError(t, c.SubmitArticle("./testdata/empty.md"))
+		assert.NoError(t, c.SubmitArticle("./testdata/empty.md", true))
 	}
 }
 
@@ -68,12 +69,13 @@ func TestSubmitArticle_Update(t *testing.T) {
 		ArticleUpdate: optional.NewInterface(devto.ArticleUpdate{
 			Article: devto.ArticleUpdateArticle{
 				BodyMarkdown: emptyArticle,
+				Published:    true,
 			},
 		},
 		),
 	}).Return(devto.ArticleShow{Id: articleID}, nil, nil)
 
-	assert.NoError(t, c.SubmitArticle("./testdata/empty.md"))
+	assert.NoError(t, c.SubmitArticle("./testdata/empty.md", true))
 }
 
 func TestListArticle(t *testing.T) {

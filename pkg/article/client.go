@@ -55,7 +55,7 @@ func SetConfig(cfg configer) Option {
 	}
 }
 
-func (c *Client) SubmitArticle(filename string) error {
+func (c *Client) SubmitArticle(filename string, published bool) error {
 	body, err := SetImageLinks(filename, c.config.ImageLinks(), c.config.CoverImage())
 	if err != nil {
 		return err
@@ -67,6 +67,7 @@ func (c *Client) SubmitArticle(filename string) error {
 			ArticleCreate: optional.NewInterface(devto.ArticleCreate{
 				Article: devto.ArticleCreateArticle{
 					BodyMarkdown: body,
+					Published:    published,
 				},
 			},
 			),
@@ -87,6 +88,7 @@ func (c *Client) SubmitArticle(filename string) error {
 			ArticleUpdate: optional.NewInterface(devto.ArticleUpdate{
 				Article: devto.ArticleUpdateArticle{
 					BodyMarkdown: body,
+					Published:    published,
 				},
 			},
 			),
