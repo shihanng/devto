@@ -14,10 +14,11 @@ import (
 )
 
 const (
-	flagAPIKey = "api-key"
-	flagDebug  = "debug"
-	flagPrefix = "prefix"
-	flagForce  = "force"
+	flagAPIKey    = "api-key"
+	flagDebug     = "debug"
+	flagPrefix    = "prefix"
+	flagForce     = "force"
+	flagPublished = "published"
 )
 
 func New() (*cobra.Command, func()) {
@@ -64,6 +65,8 @@ in images. If the value of a key is an empty string, it will not be replaced, e.
 		RunE: r.submitRunE,
 		Args: cobra.ExactArgs(1),
 	}
+	submitCmd.PersistentFlags().Bool(
+		flagPublished, false, "Publish article with this flag. Front matter in markdown takes precedence")
 
 	generateCmd := &cobra.Command{
 		Use:   "generate <Markdown file>",
@@ -161,7 +164,12 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	return client.SubmitArticle(filename, false)
+	published, err := cmd.PersistentFlags().GetBool(flagPublished)
+	if err != nil {
+		return errors.Wrap(err, "cmd: fail to get published flag")
+	}
+
+	return client.SubmitArticle(filename, published)
 }
 
 func (r *runner) generateRunE(cmd *cobra.Command, args []string) error {
