@@ -45,7 +45,7 @@ func TestSubmitArticle_Create(t *testing.T) {
 		mockConfig.EXPECT().SetArticleID(articleID)
 		mockConfig.EXPECT().Save().Return(nil)
 
-		assert.NoError(t, c.SubmitArticle("./testdata/empty.md", true))
+		assert.NoError(t, c.SubmitArticle("./testdata/empty.md", true, ""))
 	}
 }
 
@@ -75,7 +75,7 @@ func TestSubmitArticle_Update(t *testing.T) {
 		),
 	}).Return(devto.ArticleShow{Id: articleID}, nil, nil)
 
-	assert.NoError(t, c.SubmitArticle("./testdata/empty.md", true))
+	assert.NoError(t, c.SubmitArticle("./testdata/empty.md", true, ""))
 }
 
 func TestListArticle(t *testing.T) {

@@ -65,6 +65,7 @@ in images. If the value of a key is an empty string, it will not be replaced, e.
 		RunE: r.submitRunE,
 		Args: cobra.ExactArgs(1),
 	}
+	submitCmd.PersistentFlags().StringP(flagPrefix, "p", "", "Prefix (cover) image links with the given value")
 	submitCmd.PersistentFlags().Bool(
 		flagPublished, false, "Publish article with this flag. Front matter in markdown takes precedence")
 
@@ -154,6 +155,11 @@ func (r *runner) listRunE(cmd *cobra.Command, args []string) error {
 func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 	filename := args[0]
 
+	prefix, err := cmd.PersistentFlags().GetString(flagPrefix)
+	if err != nil {
+		return errors.Wrap(err, "cmd: fail to get prefix flag")
+	}
+
 	cfg, err := config.New(configFrom(filename))
 	if err != nil {
 		return err
@@ -169,7 +175,7 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "cmd: fail to get published flag")
 	}
 
-	return client.SubmitArticle(filename, published)
+	return client.SubmitArticle(filename, published, prefix)
 }
 
 func (r *runner) generateRunE(cmd *cobra.Command, args []string) error {

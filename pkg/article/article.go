@@ -12,7 +12,7 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-func SetImageLinks(filename string, images map[string]string, coverImage string) (string, error) {
+func SetImageLinks(filename string, images map[string]string, coverImage, prefix string) (string, error) {
 	parsed, n, err := read(filename)
 	if err != nil {
 		return "", err
@@ -20,6 +20,8 @@ func SetImageLinks(filename string, images map[string]string, coverImage string)
 
 	if coverImage != "" {
 		parsed.frontMatter.CoverImage = coverImage
+	} else if parsed.frontMatter.CoverImage != "" {
+		parsed.frontMatter.CoverImage = prefix + parsed.frontMatter.CoverImage
 	}
 
 	r := renderer.NewRenderer(renderer.WithNodeRenderers(util.Prioritized(&mdRender{}, 100)))
@@ -29,6 +31,8 @@ func SetImageLinks(filename string, images map[string]string, coverImage string)
 			n := node.(*ast.Image)
 			if replace, ok := images[string(n.Destination)]; ok && replace != "" {
 				n.Destination = []byte(replace)
+			} else {
+				n.Destination = []byte(prefix + string(n.Destination))
 			}
 		}
 		return ast.WalkContinue, nil
