@@ -43,3 +43,8 @@ issues:
       linters:
         - funlen
       text: "Function 'New' is too long"
+
+    - path: main.go
+      linters:
+        - gomnd
+      text: "mnd: Magic number: 1, in <argument> detected"

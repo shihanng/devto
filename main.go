@@ -8,7 +8,9 @@ import (
 
 func main() {
 	c, sync := cmd.New(os.Stdout)
-	_ = c.Execute()
+	defer sync()
 
-	sync()
+	if err := c.Execute(); err != nil {
+		os.Exit(1)
+	}
 }
