@@ -1,0 +1,5 @@
+This is a dry run. Remove --dry-run to submit to dev.to
+---
+Filename: {{ .Dir }}/test_article.md
+Published: false
+Prefixed: test/

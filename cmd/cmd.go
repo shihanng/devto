@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -16,19 +18,22 @@ import (
 const (
 	flagAPIKey    = "api-key"
 	flagDebug     = "debug"
-	flagPrefix    = "prefix"
+	flagDryRun    = "dry-run"
 	flagForce     = "force"
+	flagPrefix    = "prefix"
 	flagPublished = "published"
 )
 
-func New() (*cobra.Command, func()) {
+func New(out io.Writer) (*cobra.Command, func()) {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 	viper.SetEnvPrefix("DEVTO")
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 
-	r := &runner{}
+	r := &runner{
+		out: out,
+	}
 
 	listCmd := &cobra.Command{
 		Use:   "list",
@@ -68,6 +73,8 @@ in images. If the value of a key is an empty string, it will not be replaced, e.
 	submitCmd.PersistentFlags().StringP(flagPrefix, "p", "", "Prefix (cover) image links with the given value")
 	submitCmd.PersistentFlags().Bool(
 		flagPublished, false, "Publish article with this flag. Front matter in markdown takes precedence")
+	submitCmd.PersistentFlags().Bool(
+		flagDryRun, false, "Print information instead of submit to dev.to")
 
 	generateCmd := &cobra.Command{
 		Use:   "generate <Markdown file>",
@@ -103,6 +110,7 @@ in images. If the value of a key is an empty string, it will not be replaced, e.
 }
 
 type runner struct {
+	out io.Writer
 	log *zap.SugaredLogger
 }
 
@@ -165,6 +173,11 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	dryRun, err := cmd.PersistentFlags().GetBool(flagDryRun)
+	if err != nil {
+		return errors.Wrap(err, "cmd: fail to get force flag")
+	}
+
 	client, err := article.NewClient(viper.GetString(flagAPIKey), article.SetConfig(cfg))
 	if err != nil {
 		return err
@@ -173,6 +186,11 @@ func (r *runner) submitRunE(cmd *cobra.Command, args []string) error {
 	published, err := cmd.PersistentFlags().GetBool(flagPublished)
 	if err != nil {
 		return errors.Wrap(err, "cmd: fail to get published flag")
+	}
+
+	if dryRun {
+		submitArticleDryRun(r.out, cfg, filename, published, prefix)
+		return nil
 	}
 
 	return client.SubmitArticle(filename, published, prefix)
@@ -206,4 +224,12 @@ func (r *runner) generateRunE(cmd *cobra.Command, args []string) error {
 
 func configFrom(filename string) string {
 	return filepath.Join(filepath.Dir(filename), "devto.yml")
+}
+
+func submitArticleDryRun(w io.Writer, cfg *config.Config, filename string, published bool, prefix string) {
+	fmt.Fprintln(w, "This is a dry run. Remove --dry-run to submit to dev.to")
+	fmt.Fprintln(w, "---")
+	fmt.Fprintf(w, "Filename: %s\n", filename)
+	fmt.Fprintf(w, "Published: %t\n", published)
+	fmt.Fprintf(w, "Prefixed: %s\n", prefix)
 }
