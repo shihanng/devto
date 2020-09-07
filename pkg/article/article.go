@@ -18,9 +18,9 @@ func SetImageLinks(filename string, images map[string]string, coverImage, prefix
 		return "", err
 	}
 
-	if coverImage != "" {
-		parsed.frontMatter.CoverImage = coverImage
-	} else if parsed.frontMatter.CoverImage != "" {
+	if replace, ok := images[parsed.frontMatter.CoverImage]; ok && replace != "" {
+		parsed.frontMatter.CoverImage = replace
+	} else {
 		parsed.frontMatter.CoverImage = prefix + parsed.frontMatter.CoverImage
 	}
 

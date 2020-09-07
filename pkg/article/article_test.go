@@ -48,8 +48,10 @@ cover_image: www.example.com/./cv.jpg
 		{
 			name: "prefix cover_image",
 			args: args{
-				filename:      "./testdata/testdata.md",
-				images:        map[string]string{},
+				filename: "./testdata/testdata.md",
+				images: map[string]string{
+					"./cv.jpg": "test/./cv.jpg",
+				},
 				setCoverImage: "test/./cv.jpg",
 			},
 			want: `---
