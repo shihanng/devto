@@ -24,8 +24,6 @@ type configer interface {
 	SetImageLinks(map[string]string)
 	ArticleID() int32
 	SetArticleID(int32)
-	CoverImage() string
-	SetCoverImage(string)
 }
 
 type Client struct {
