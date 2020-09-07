@@ -9,10 +9,9 @@ import (
 
 func TestSetImageLinks(t *testing.T) {
 	type args struct {
-		filename      string
-		images        map[string]string
-		setCoverImage string
-		prefix        string
+		filename string
+		images   map[string]string
+		prefix   string
 	}
 
 	tests := []struct {
@@ -29,8 +28,7 @@ func TestSetImageLinks(t *testing.T) {
 					"./image.png":   "./a/image.png",
 					"./image-2.png": "",
 				},
-				setCoverImage: "",
-				prefix:        "www.example.com/",
+				prefix: "www.example.com/",
 			},
 			want: `---
 title: A title
@@ -48,9 +46,10 @@ cover_image: www.example.com/./cv.jpg
 		{
 			name: "prefix cover_image",
 			args: args{
-				filename:      "./testdata/testdata.md",
-				images:        map[string]string{},
-				setCoverImage: "test/./cv.jpg",
+				filename: "./testdata/testdata.md",
+				images: map[string]string{
+					"./cv.jpg": "test/./cv.jpg",
+				},
 			},
 			want: `---
 title: A title
@@ -78,7 +77,7 @@ cover_image: test/./cv.jpg
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := SetImageLinks(tt.args.filename, tt.args.images, tt.args.setCoverImage, tt.args.prefix)
+			got, err := SetImageLinks(tt.args.filename, tt.args.images, tt.args.prefix)
 			tt.assertion(t, err)
 			assert.Equal(t, tt.want, got)
 		})
@@ -86,7 +85,7 @@ cover_image: test/./cv.jpg
 }
 
 func TestSetImageLinks_golden(t *testing.T) {
-	content, err := SetImageLinks("./testdata/real_article.md", map[string]string{}, "", "example.com/")
+	content, err := SetImageLinks("./testdata/real_article.md", map[string]string{}, "example.com/")
 	assert.NoError(t, err)
 
 	g := goldie.New(t)
@@ -99,36 +98,34 @@ func TestGetImageLinks(t *testing.T) {
 	}
 
 	tests := []struct {
-		name           string
-		args           args
-		wantLinks      map[string]string
-		wantCoverImage string
-		assertion      assert.ErrorAssertionFunc
+		name      string
+		args      args
+		want      map[string]string
+		assertion assert.ErrorAssertionFunc
 	}{
 		{
 			name: "normal",
 			args: args{filename: "./testdata/testdata.md"},
-			wantLinks: map[string]string{
+			want: map[string]string{
 				"./image.png":   "",
 				"./image-2.png": "",
+				"./cv.jpg":      "",
 			},
-			wantCoverImage: "./cv.jpg",
-			assertion:      assert.NoError,
+			assertion: assert.NoError,
 		},
 		{
 			name:      "not found",
 			args:      args{filename: "./testdata/unknown.md"},
-			wantLinks: nil,
+			want:      nil,
 			assertion: assert.Error,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotLinks, gotCoverImage, err := GetImageLinks(tt.args.filename)
+			gotLinks, err := GetImageLinks(tt.args.filename)
 			tt.assertion(t, err)
-			assert.Equal(t, tt.wantLinks, gotLinks)
-			assert.Equal(t, tt.wantCoverImage, gotCoverImage)
+			assert.Equal(t, tt.want, gotLinks)
 		})
 	}
 }

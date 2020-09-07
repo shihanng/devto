@@ -12,15 +12,15 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-func SetImageLinks(filename string, images map[string]string, coverImage, prefix string) (string, error) {
+func SetImageLinks(filename string, images map[string]string, prefix string) (string, error) {
 	parsed, n, err := read(filename)
 	if err != nil {
 		return "", err
 	}
 
-	if coverImage != "" {
-		parsed.frontMatter.CoverImage = coverImage
-	} else if parsed.frontMatter.CoverImage != "" {
+	if replace, ok := images[parsed.frontMatter.CoverImage]; ok && replace != "" {
+		parsed.frontMatter.CoverImage = replace
+	} else {
 		parsed.frontMatter.CoverImage = prefix + parsed.frontMatter.CoverImage
 	}
 
@@ -51,23 +51,17 @@ func SetImageLinks(filename string, images map[string]string, coverImage, prefix
 	return parsed.Content()
 }
 
-func CoverImageUntouch(original string) string {
-	return original
-}
-
-func CoverImagePrefixed(prefix string) func(string) string {
-	return func(original string) string {
-		return prefix + original
-	}
-}
-
-func GetImageLinks(filename string) (map[string]string, string, error) {
+func GetImageLinks(filename string) (map[string]string, error) {
 	parsed, n, err := read(filename)
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
 
 	images := make(map[string]string)
+
+	if parsed.frontMatter.CoverImage != "" {
+		images[parsed.frontMatter.CoverImage] = ""
+	}
 
 	if err := ast.Walk(n, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
 		if entering && node.Kind() == ast.KindImage {
@@ -76,10 +70,10 @@ func GetImageLinks(filename string) (map[string]string, string, error) {
 		}
 		return ast.WalkContinue, nil
 	}); err != nil {
-		return nil, "", errors.Wrap(err, "article: walk ast for GetImageLinks")
+		return nil, errors.Wrap(err, "article: walk ast for GetImageLinks")
 	}
 
-	return images, parsed.frontMatter.CoverImage, nil
+	return images, nil
 }
 
 func read(filename string) (*Parsed, ast.Node, error) {

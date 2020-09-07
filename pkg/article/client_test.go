@@ -31,7 +31,6 @@ func TestSubmitArticle_Create(t *testing.T) {
 
 	{
 		mockConfig.EXPECT().ImageLinks().Return(nil)
-		mockConfig.EXPECT().CoverImage().Return("")
 		mockConfig.EXPECT().ArticleID().Return(int32(0))
 		mockAPIClient.EXPECT().CreateArticle(c.contextWithAPIKey(), &devto.ArticlesApiCreateArticleOpts{
 			ArticleCreate: optional.NewInterface(devto.ArticleCreate{
@@ -62,7 +61,6 @@ func TestSubmitArticle_Update(t *testing.T) {
 	c.api = mockAPIClient
 
 	mockConfig.EXPECT().ImageLinks().Return(nil)
-	mockConfig.EXPECT().CoverImage().Return("")
 	mockConfig.EXPECT().ArticleID().Return(articleID)
 	mockConfig.EXPECT().ArticleID().Return(articleID)
 	mockAPIClient.EXPECT().UpdateArticle(c.contextWithAPIKey(), articleID, &devto.ArticlesApiUpdateArticleOpts{
@@ -110,13 +108,13 @@ func TestGenerateImageLinks(t *testing.T) {
 	mockConfig.EXPECT().ImageLinks().Return(map[string]string{
 		"./image.png":   "image-1.png",
 		"./image-3.png": "image-3.png",
+		"./cv.jpg":      "cv.jpg",
 	})
 	mockConfig.EXPECT().SetImageLinks(map[string]string{
 		"./image.png":   "image-1.png",
 		"./image-2.png": "",
+		"./cv.jpg":      "cv.jpg",
 	})
-	mockConfig.EXPECT().CoverImage().Return("")
-	mockConfig.EXPECT().SetCoverImage("./cv.jpg")
 	mockConfig.EXPECT().Save().Return(nil)
 
 	assert.NoError(t, c.GenerateImageLinks("./testdata/testdata.md", "", false))
@@ -133,8 +131,6 @@ func TestGenerateImageLinks_NoCoverImage(t *testing.T) {
 
 	mockConfig.EXPECT().ImageLinks().Return(nil)
 	mockConfig.EXPECT().SetImageLinks(map[string]string{})
-	mockConfig.EXPECT().CoverImage().Return("")
-	mockConfig.EXPECT().SetCoverImage("")
 	mockConfig.EXPECT().Save().Return(nil)
 
 	assert.NoError(t, c.GenerateImageLinks("./testdata/empty.md", "", false))
@@ -156,10 +152,8 @@ func TestGenerateImageLinks_WithPrefix(t *testing.T) {
 	mockConfig.EXPECT().SetImageLinks(map[string]string{
 		"./image.png":   "image-1.png",
 		"./image-2.png": "prefix/./image-2.png",
+		"./cv.jpg":      "prefix/./cv.jpg",
 	})
-	mockConfig.EXPECT().CoverImage().Return("")
-	mockConfig.EXPECT().SetCoverImage("./cv.jpg")
-	mockConfig.EXPECT().SetCoverImage("prefix/./cv.jpg")
 	mockConfig.EXPECT().Save().Return(nil)
 
 	assert.NoError(t, c.GenerateImageLinks("./testdata/testdata.md", "prefix/", false))
@@ -181,9 +175,8 @@ func TestGenerateImageLinks_WithPrefixOverride(t *testing.T) {
 	mockConfig.EXPECT().SetImageLinks(map[string]string{
 		"./image.png":   "prefix/./image.png",
 		"./image-2.png": "prefix/./image-2.png",
+		"./cv.jpg":      "prefix/./cv.jpg",
 	})
-	mockConfig.EXPECT().CoverImage().Return("custom_cover.png")
-	mockConfig.EXPECT().SetCoverImage("prefix/./cv.jpg")
 	mockConfig.EXPECT().Save().Return(nil)
 
 	assert.NoError(t, c.GenerateImageLinks("./testdata/testdata.md", "prefix/", true))
