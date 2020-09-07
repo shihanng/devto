@@ -12,7 +12,7 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-func SetImageLinks(filename string, images map[string]string, coverImage, prefix string) (string, error) {
+func SetImageLinks(filename string, images map[string]string, prefix string) (string, error) {
 	parsed, n, err := read(filename)
 	if err != nil {
 		return "", err

@@ -31,7 +31,6 @@ func TestSubmitArticle_Create(t *testing.T) {
 
 	{
 		mockConfig.EXPECT().ImageLinks().Return(nil)
-		mockConfig.EXPECT().CoverImage().Return("")
 		mockConfig.EXPECT().ArticleID().Return(int32(0))
 		mockAPIClient.EXPECT().CreateArticle(c.contextWithAPIKey(), &devto.ArticlesApiCreateArticleOpts{
 			ArticleCreate: optional.NewInterface(devto.ArticleCreate{
@@ -62,7 +61,6 @@ func TestSubmitArticle_Update(t *testing.T) {
 	c.api = mockAPIClient
 
 	mockConfig.EXPECT().ImageLinks().Return(nil)
-	mockConfig.EXPECT().CoverImage().Return("")
 	mockConfig.EXPECT().ArticleID().Return(articleID)
 	mockConfig.EXPECT().ArticleID().Return(articleID)
 	mockAPIClient.EXPECT().UpdateArticle(c.contextWithAPIKey(), articleID, &devto.ArticlesApiUpdateArticleOpts{
