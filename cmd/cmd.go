@@ -70,7 +70,7 @@ in images. If the value of a key is an empty string, it will not be replaced, e.
 		RunE: r.submitRunE,
 		Args: cobra.ExactArgs(1),
 	}
-	submitCmd.PersistentFlags().StringP(flagPrefix, "p", "", "Prefix (cover) image links with the given value")
+	submitCmd.PersistentFlags().StringP(flagPrefix, "p", "", "Prefix image links with the given value")
 	submitCmd.PersistentFlags().Bool(
 		flagPublished, false, "Publish article with this flag. Front matter in markdown takes precedence")
 	submitCmd.PersistentFlags().Bool(
@@ -82,7 +82,7 @@ in images. If the value of a key is an empty string, it will not be replaced, e.
 		RunE:  r.generateRunE,
 		Args:  cobra.ExactArgs(1),
 	}
-	generateCmd.PersistentFlags().StringP(flagPrefix, "p", "", "Prefix (cover) image links with the given value")
+	generateCmd.PersistentFlags().StringP(flagPrefix, "p", "", "Prefix image links with the given value")
 	generateCmd.PersistentFlags().BoolP(
 		flagForce, "f", false, "Use with -p to override existing values in the devto.yml file")
 
