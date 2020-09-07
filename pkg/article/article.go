@@ -51,10 +51,10 @@ func SetImageLinks(filename string, images map[string]string, prefix string) (st
 	return parsed.Content()
 }
 
-func GetImageLinks(filename string) (map[string]string, string, error) {
+func GetImageLinks(filename string) (map[string]string, error) {
 	parsed, n, err := read(filename)
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
 
 	images := make(map[string]string)
@@ -70,10 +70,10 @@ func GetImageLinks(filename string) (map[string]string, string, error) {
 		}
 		return ast.WalkContinue, nil
 	}); err != nil {
-		return nil, "", errors.Wrap(err, "article: walk ast for GetImageLinks")
+		return nil, errors.Wrap(err, "article: walk ast for GetImageLinks")
 	}
 
-	return images, parsed.frontMatter.CoverImage, nil
+	return images, nil
 }
 
 func read(filename string) (*Parsed, ast.Node, error) {

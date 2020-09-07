@@ -69,8 +69,7 @@ func TestGenerate(t *testing.T) {
 	actual, err := ioutil.ReadFile(filepath.Join(dir, "devto.yml"))
 	require.NoError(t, err)
 
-	expected := []byte(`cover_image: ./cv.jpg
-images:
+	expected := []byte(`images:
   ./cv.jpg: ""
   ./image.png: ""
 `)
@@ -96,8 +95,7 @@ func TestGenerate_Prefix(t *testing.T) {
 	actual, err := ioutil.ReadFile(filepath.Join(dir, "devto.yml"))
 	require.NoError(t, err)
 
-	expected := []byte(`cover_image: test/./cv.jpg
-images:
+	expected := []byte(`images:
   ./cv.jpg: test/./cv.jpg
   ./image.png: test/./image.png
 `)
