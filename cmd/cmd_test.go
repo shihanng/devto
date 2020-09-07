@@ -71,6 +71,7 @@ func TestGenerate(t *testing.T) {
 
 	expected := []byte(`cover_image: ./cv.jpg
 images:
+  ./cv.jpg: ""
   ./image.png: ""
 `)
 	assert.Equal(t, expected, actual)
@@ -97,6 +98,7 @@ func TestGenerate_Prefix(t *testing.T) {
 
 	expected := []byte(`cover_image: test/./cv.jpg
 images:
+  ./cv.jpg: test/./cv.jpg
   ./image.png: test/./image.png
 `)
 	assert.Equal(t, expected, actual)

@@ -69,6 +69,10 @@ func GetImageLinks(filename string) (map[string]string, string, error) {
 
 	images := make(map[string]string)
 
+	if parsed.frontMatter.CoverImage != "" {
+		images[parsed.frontMatter.CoverImage] = ""
+	}
+
 	if err := ast.Walk(n, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
 		if entering && node.Kind() == ast.KindImage {
 			n := node.(*ast.Image)

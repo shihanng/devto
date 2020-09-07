@@ -111,6 +111,7 @@ func TestGetImageLinks(t *testing.T) {
 			wantLinks: map[string]string{
 				"./image.png":   "",
 				"./image-2.png": "",
+				"./cv.jpg":      "",
 			},
 			wantCoverImage: "./cv.jpg",
 			assertion:      assert.NoError,
