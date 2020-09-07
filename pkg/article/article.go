@@ -51,16 +51,6 @@ func SetImageLinks(filename string, images map[string]string, coverImage, prefix
 	return parsed.Content()
 }
 
-func CoverImageUntouch(original string) string {
-	return original
-}
-
-func CoverImagePrefixed(prefix string) func(string) string {
-	return func(original string) string {
-		return prefix + original
-	}
-}
-
 func GetImageLinks(filename string) (map[string]string, string, error) {
 	parsed, n, err := read(filename)
 	if err != nil {
