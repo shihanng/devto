@@ -20,7 +20,7 @@ func SetImageLinks(filename string, images map[string]string, prefix string) (st
 
 	if replace, ok := images[parsed.frontMatter.CoverImage]; ok && replace != "" {
 		parsed.frontMatter.CoverImage = replace
-	} else {
+	} else if parsed.frontMatter.CoverImage != "" {
 		parsed.frontMatter.CoverImage = prefix + parsed.frontMatter.CoverImage
 	}
 
@@ -31,7 +31,7 @@ func SetImageLinks(filename string, images map[string]string, prefix string) (st
 			n := node.(*ast.Image)
 			if replace, ok := images[string(n.Destination)]; ok && replace != "" {
 				n.Destination = []byte(replace)
-			} else {
+			} else if len(n.Destination) > 0 {
 				n.Destination = []byte(prefix + string(n.Destination))
 			}
 		}
@@ -66,7 +66,9 @@ func GetImageLinks(filename string) (map[string]string, error) {
 	if err := ast.Walk(n, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
 		if entering && node.Kind() == ast.KindImage {
 			n := node.(*ast.Image)
-			images[string(n.Destination)] = ""
+			if len(n.Destination) > 0 {
+				images[string(n.Destination)] = ""
+			}
 		}
 		return ast.WalkContinue, nil
 	}); err != nil {

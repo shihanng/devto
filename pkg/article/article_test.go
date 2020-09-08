@@ -65,6 +65,25 @@ cover_image: test/./cv.jpg
 			assertion: assert.NoError,
 		},
 		{
+			name: "prefix with no entries in config",
+			args: args{
+				filename: "./testdata/testdata_nocoverimage.md",
+				images:   map[string]string{},
+				prefix:   "test/",
+			},
+			want: `---
+title: A title
+published: false
+description: A description
+tags: tag-one, tag-two
+---
+![image]()
+[Google](www.google.com)
+![image](test/./image-2.png)
+`,
+			assertion: assert.NoError,
+		},
+		{
 			name: "not found",
 			args: args{
 				filename: "./testdata/unknown.md",
@@ -110,6 +129,14 @@ func TestGetImageLinks(t *testing.T) {
 				"./image.png":   "",
 				"./image-2.png": "",
 				"./cv.jpg":      "",
+			},
+			assertion: assert.NoError,
+		},
+		{
+			name: "normal",
+			args: args{filename: "./testdata/testdata_nocoverimage.md"},
+			want: map[string]string{
+				"./image-2.png": "",
 			},
 			assertion: assert.NoError,
 		},
