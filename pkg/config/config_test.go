@@ -129,3 +129,55 @@ images:
 
 	assert.Equal(t, expected, actual)
 }
+
+func TestConfig_SetImageLinks(t *testing.T) {
+	type args struct {
+		links map[string]string
+	}
+
+	tests := []struct {
+		name     string
+		args     args
+		expected []byte
+	}{
+		{
+			name: "empty",
+			args: args{},
+			expected: []byte(`images: ""
+`),
+		},
+		{
+			name: "with values",
+			args: args{
+				links: map[string]string{
+					"./image-1.png": "",
+					"./image-2.jpg": "./mod/image-2.jpg",
+				},
+			},
+			expected: []byte(`images:
+  ./image-1.png: ""
+  ./image-2.jpg: ./mod/image-2.jpg
+`),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tmpfile, err := ioutil.TempFile("", "temp.*.yml")
+			require.NoError(t, err)
+
+			defer os.Remove(tmpfile.Name()) // clean up
+
+			c, err := New(tmpfile.Name())
+			require.NoError(t, err)
+
+			c.SetImageLinks(tt.args.links)
+
+			require.NoError(t, c.Save())
+
+			actual, err := ioutil.ReadFile(tmpfile.Name())
+			require.NoError(t, err)
+
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
+}

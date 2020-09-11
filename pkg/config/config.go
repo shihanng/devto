@@ -15,7 +15,7 @@ type Config struct {
 func New(filename string) (*Config, error) {
 	c := Config{
 		filename: filename,
-		viper:    viper.New(),
+		viper:    viper.NewWithOptions(viper.KeyDelimiter("|")),
 	}
 
 	c.viper.SetConfigFile(filename)
@@ -38,7 +38,11 @@ func (c *Config) ImageLinks() map[string]string {
 }
 
 func (c *Config) SetImageLinks(links map[string]string) {
-	c.viper.Set("images", links)
+	if len(links) == 0 {
+		c.viper.Set("images", "")
+	} else {
+		c.viper.Set("images", links)
+	}
 }
 
 func (c *Config) ArticleID() int32 {
