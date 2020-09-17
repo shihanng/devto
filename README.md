@@ -23,6 +23,18 @@
 
 The DEV API does not have a way of uploading images yet. If we submit a Markdown content with relative paths of image links, DEV will not be able to show those images. As a workaround of this problem, we need to provide a full path for the images either manually via the `devto.yml` file or using the `--prefix` flag.
 
+The Markdown file must contains at least the title property of the Jekyll front matter, like in:
+
+```
+---
+title: An example title
+published: true
+description: ...
+tags: ...
+cover_image: ...
+---
+```
+
 You can find more information about the usage via the `--help` flag.
 
 ```sh
